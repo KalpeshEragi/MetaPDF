@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Image Grid</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <header class="header">
+        <h1>Feature Highlights</h1>
+        <p>Explore the capabilities of our advanced system</p>
+    </header>
+    <div class="image-grid">
+        <div class="image-container">
+            <div class="circle">
+                <a href="{{ url_for('streamlit_bp.streamlit_app') }}">
+                <img src="{{ url_for('static', filename='Images/summaryicon.png') }}" alt="PDF Summary Icon">
+                </a>
+            </div>
+            <h3>PDF Summary</h3>
+        </div>
+        <div class="image-container">
+            <div class="circle">
+                <a href="{{ url_for('chat_app.index') }}">
+                <img src="{{ url_for('static', filename='Images/chat.png') }}" alt="Chat Icon">
+                </a>
+            </div>
+            <h3>Chat with PDFs</h3>
+        </div>
+        <div class="image-container">
+            <div class="circle">
+                <a href="{{ url_for('home.convertor')}}">
+                <img src="{{ url_for('static', filename='Images/convert.png') }}" alt="PDF Converter Icon">
+                </a>
+            </div>
+            <h3>PDF Converter</h3>
+        </div>
+        
+    </div>
+</body>
+</html>

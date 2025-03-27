@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Converter</title>
+    <link rel="stylesheet" href="{{url_for('static' ,filename='css/convertor.css')}}">
+</head>
+<body>
+    <!-- Welcome Text Section at Top -->
+    <section class="welcome">
+        <h1>Welcome to PDF Converter</h1>
+        <p>Convert your documents to PDF . Choose the conversion tool from the icons below.</p>
+        <div class="get-started">
+            <h2>Get Started</h2>
+        </div>
+    </section>
+
+    <!-- Original Icon Section (Unchanged) -->
+    <ul class="sci">
+        <li>
+            <a href="{{ url_for('ppt_converter.index')}}" 
+               style="--img: url('{{ url_for('static', filename='Images/ppttopdf.png') }}'); 
+                      --img-hover: url('{{ url_for('static', filename='Images/invertppttopdf.png') }}');">
+            </a>
+            <div class="icon-container">
+                <h3>PPT To PDF</h3>
+            </div>
+        </li>
+        <li>
+            <a href="{{ url_for('docx_converter.index')}}" 
+               style="--img: url('{{ url_for('static', filename='Images/wordtopdf.png') }}'); 
+                      --img-hover: url('{{ url_for('static', filename='Images/invertwordtoppdf.png') }}');">
+            </a>
+            <div class="icon-container">
+                <h3>WORD To PDF</h3>
+            </div>
+        </li>
+        <li>
+            <a href="{{ url_for('xl_converter.index')}}" 
+               style="--img: url('{{ url_for('static', filename='Images/xtopdf.png') }}'); 
+                      --img-hover: url('{{ url_for('static', filename='Images/invertxtopdf.png') }}');">
+            </a>
+            <div class="icon-container">
+                <h3>EXCEL To PDF</h3>
+            </div>
+        </li>
+        <li>
+            <a href="{{ url_for('txt_converter.index')}}" 
+               style="--img: url('{{ url_for('static', filename='Images/txttopdf.png') }}'); 
+                      --img-hover: url('{{ url_for('static', filename='Images/inverttxttopdf.png') }}');">
+            </a>
+            <div class="icon-container">
+                <h3>TXT To PDF</h3>
+            </div>
+        </li>
+    </ul>
+</body>
+</html>

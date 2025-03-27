@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF AI Assistant</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- PDF Viewer Section -->
+        <div class="pdf-section">
+            <div class="pdf-header">
+                <h2><i class="fas fa-file-pdf"></i> PDF Viewer</h2>
+                <div class="upload-controls">
+                    <button onclick="document.getElementById('pdf-file').click()" class="select-pdf-btn">
+                        <i class="fas fa-file-upload"></i> Select PDF
+                    </button>
+                    <span class="file-name">No file selected</span>
+                </div>
+                <form id="pdf-upload-form" style="display: none;">
+                    <input type="file" id="pdf-file" name="pdf_files" accept=".pdf" multiple>
+                </form>
+            </div>
+            <div id="upload-loading" class="loading">
+                <div class="loader"></div>
+                <span>Processing PDF...</span>
+            </div>
+            <div id="upload-error" class="error-message"></div>
+            <div id="pdf-viewer" class="pdf-content">
+                <div id="pdf-placeholder">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Upload a PDF to begin</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-section">
+            <div class="chat-header">
+                <h2><i class="fas fa-robot"></i> AI Assistant</h2>
+            </div>
+
+            <div class="chat-history" id="chat-history">
+                <div class="chat-message ai-message">
+                    <div class="message-content">
+                        <p>Hello! I'm your AI assistant. Upload a PDF and I'll help you analyze it.</p>
+                    </div>
+                </div>
+                {% for chat in chat_history %}
+                    <div class="chat-message user-message">
+                        <div class="message-content">
+                            <p>{{ chat.question }}</p>
+                        </div>
+                    </div>
+                    <div class="chat-message ai-message">
+                        <div class="message-content">
+                            <p>{{ chat.answer }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="chat-loading" class="loading">
+                <div class="loader"></div>
+                <span>Processing your question...</span>
+            </div>
+            <div id="chat-error" class="error-message"></div>
+
+            <div class="input-section">
+                <form id="chat-form" style="display: none;">
+                    <div class="input-wrapper">
+                        <input type="text" name="user_question" id="user-question"
+                               placeholder="Ask me anything about the PDF..." required>
+                        <button type="submit">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfFile = document.getElementById('pdf-file');
+            const fileName = document.querySelector('.file-name');
+            const pdfUploadForm = document.getElementById('pdf-upload-form');
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const pdfPlaceholder = document.getElementById('pdf-placeholder');
+            const chatForm = document.getElementById('chat-form');
+            const chatHistory = document.getElementById('chat-history');
+            const uploadLoading = document.getElementById('upload-loading');
+            const chatLoading = document.getElementById('chat-loading');
+            const uploadError = document.getElementById('upload-error');
+            const chatError = document.getElementById('chat-error');
+
+            // Handle file selection
+            pdfFile.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    fileName.textContent = this.files[0].name;
+                    handleUpload();
+                } else {
+                    fileName.textContent = 'No file selected';
+                }
+            });
+
+            // Handle file upload
+            async function handleUpload() {
+                uploadError.style.display = 'none';
+                uploadLoading.style.display = 'flex';
+
+                try {
+                    const formData = new FormData(pdfUploadForm);
+                    const response = await fetch('/chat/', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        // Show PDF in viewer
+                        const pdfUrl = URL.createObjectURL(pdfFile.files[0]);
+                        pdfPlaceholder.style.display = 'none';
+                        pdfViewer.innerHTML = `<embed src="${pdfUrl}" type="application/pdf" width="100%" height="100%">`;
+                        
+                        // Enable chat interface
+                        chatForm.style.display = 'flex';
+                    } else {
+                        uploadError.textContent = data.message;
+                        uploadError.style.display = 'block';
+                    }
+                } catch (error) {
+                    uploadError.textContent = 'Error uploading PDF. Please try again.';
+                    uploadError.style.display = 'block';
+                } finally {
+                    uploadLoading.style.display = 'none';
+                }
+            }
+
+            // Handle chat submission
+            chatForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const userQuestion = document.getElementById('user-question');
+                chatError.style.display = 'none';
+                chatLoading.style.display = 'flex';
+
+                try {
+                    const formData = new FormData(chatForm);
+                    const response = await fetch('/chat/', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        // Add user message
+                        const userMessage = document.createElement('div');
+                        userMessage.className = 'chat-message user-message';
+                        userMessage.innerHTML = `
+                            <div class="message-content">
+                                <p>${userQuestion.value}</p>
+                            </div>
+                        `;
+                        chatHistory.appendChild(userMessage);
+
+                        // Add AI response
+                        const aiMessage = document.createElement('div');
+                        aiMessage.className = 'chat-message ai-message';
+                        aiMessage.innerHTML = `
+                            <div class="message-content">
+                                <p>${data.answer}</p>
+                            </div>
+                        `;
+                        chatHistory.appendChild(aiMessage);
+
+                        // Clear input and scroll to bottom
+                        userQuestion.value = '';
+                        chatHistory.scrollTop = chatHistory.scrollHeight;
+                    } else {
+                        chatError.textContent = data.message;
+                        chatError.style.display = 'block';
+                    }
+                } catch (error) {
+                    chatError.textContent = 'Error sending message. Please try again.';
+                    chatError.style.display = 'block';
+                } finally {
+                    chatLoading.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

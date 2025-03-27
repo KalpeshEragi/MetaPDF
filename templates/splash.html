@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart PDF Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/splash.css') }}">
+</head>
+<body>
+    <div class="splash-container">
+        <!-- Background Image -->
+        <div class="background-image"></div>
+
+        <!-- Title and Tagline -->
+        <h1 class="title">Smart PDF Tools</h1>
+        <p class="tagline">Summarize | Ask PDF | Convert To PDF | OCR</p>
+
+        <!-- Loader -->
+        <div class="loader">
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/splash.js') }}"></script>
+</body>
+</html>
+

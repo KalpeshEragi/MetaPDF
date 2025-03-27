@@ -1,0 +1,16 @@
+google-generativeai
+python-dotenv
+langchain-community
+langchain
+PyPDF2
+chromadb
+faiss-cpu
+langchain_google_genai
+flask
+pywin32
+psutil
+comtypes
+werkzeug
+reportlab
+transformers
+

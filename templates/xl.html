@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced PDF Tools - Excel to PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/commonconvert.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ url_for('static', filename='images/xtopdf.png') }}" alt="Logo" class="logo">
+            <h2>Convert Excel to PDF</h2>
+        </div>
+        <form id="upload-form">
+            <input type="file" id="file-input" accept=".xlsx" required><br>
+            <button type="submit">Upload and Convert</button>
+        </form>
+        <div id="loading" style="display:none;">Converting...</div>
+        <div id="download-link" style="display:none;">
+            <p>Conversion complete! <a href="#" id="pdf-link" download>Download PDF</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            const fileInput = document.getElementById('file-input');
+            formData.append('file', fileInput.files[0]);
+
+            document.getElementById('loading').style.display = 'block';
+
+            fetch('/xl/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('download-link').style.display = 'block';
+                document.getElementById('pdf-link').href = data.pdf_url;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Streamlit cache
+.streamlit/
+
+# Virtual environments
+env/
+myenv/
+ENV/
+*.env
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Data uploads and outputs
+data/
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+*.csv
+*.zip
+*.tar
+*.gz
+
+# Logs
+*.log
+
+# VS Code settings
+.vscode/
+
+# Jupyter notebooks checkpoints (if any)
+.ipynb_checkpoints/
+
+# Ignore compiled files
+*.so
+*.dll
+*.exe

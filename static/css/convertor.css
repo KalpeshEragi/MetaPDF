@@ -1,0 +1,151 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    background: linear-gradient(135deg, #b5d6f4, #93c4e8); /* Lighter blue gradient */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    color: #333; /* Darker gray text for contrast */
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Welcome Section */
+.welcome {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 40px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.85); /* Slightly off-white with higher transparency */
+    border-radius: 15px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.welcome h1 {
+    font-size: 3rem;
+    color: #4b7baf; /* Medium blue */
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.welcome p {
+    font-size: 1.4rem;
+    color: #5c8fba; /* Slightly lighter blue-gray */
+    margin-bottom: 30px;
+}
+
+/* Get Started Section */
+.get-started {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.get-started h2 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #4a90e2; /* Light blue */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(74, 144, 226, 0.1); /* Soft blue background */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow to give depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.get-started h2:hover {
+    transform: scale(1.05); /* Slight scale effect */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+/* Social Icons Section */
+.sci {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.sci li {
+    list-style: none;
+}
+
+/* Icon and Description Container */
+.icon-container {
+    display: flex; /* Enables flexbox for layout */
+    flex-direction: column; /* Aligns items (icon and description) vertically */
+    align-items: center; /* Centers items horizontally */
+    text-align: center; /* Centers text inside the container */
+    gap: 40px; /* Ensures a 40px gap between the icon and description */
+    margin-top: 20px; /* Optional: Adds space around the container */
+    padding: 10px; /* Optional: Adds space inside the container */
+}
+
+/* Icon Description Styling */
+.icon-container h3 {
+    font-size: 1.2rem;
+    color: #2c3e50; /* Light blue text */
+    font-weight: bold;
+    margin: 0; /* Prevents extra space around the text */
+    padding: 0; /* Prevents additional space inside the text block */
+}
+
+/* Icon Styling */
+.sci li a {
+    display: block;
+    width: 150px;
+    height: 150px;
+    background-color: #e0f2ff; /* Soft light blue background */
+    background-image: var(--img);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-image 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* More noticeable shadow */
+}
+
+.sci li a:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+/* Hover Effect for Icons */
+.sci li a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--img-hover);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 1;
+}
+
+.sci li a:hover::before {
+    opacity: 1;
+}
+
+/* Hide Images for Fallback (if applicable) */
+.sci li a img {
+    display: none;
+}
