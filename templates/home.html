@@ -1,44 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Image Grid</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-</head>
-<body>
-    
-    <header class="header">
-        <h1>Feature Highlights</h1>
-        <p>Explore the capabilities of our advanced system</p>
-    </header>
-    <div class="image-grid">
-        <div class="image-container">
-            <div class="circle">
-                <a href="{{ url_for('streamlit_bp.streamlit_app') }}">
-                <img src="{{ url_for('static', filename='Images/summaryicon.png') }}" alt="PDF Summary Icon">
-                </a>
-            </div>
-            <h3>PDF Summary</h3>
-        </div>
-        <div class="image-container">
-            <div class="circle">
-                <a href="{{ url_for('chat_app.index') }}">
-                <img src="{{ url_for('static', filename='Images/chat.png') }}" alt="Chat Icon">
-                </a>
-            </div>
-            <h3>Chat with PDFs</h3>
-        </div>
-        <div class="image-container">
-            <div class="circle">
-                <a href="{{ url_for('home.convertor')}}">
-                <img src="{{ url_for('static', filename='Images/convert.png') }}" alt="PDF Converter Icon">
-                </a>
-            </div>
-            <h3>PDF Converter</h3>
-        </div>
-        
-    </div>
-</body>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>     
+    <meta charset="UTF-8">     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">     
+    <title>Professional Image Grid</title>     
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">     
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"> 
+</head> 
+<body>     
+    <header class="header">         
+        <div class="logo-container">             
+            <img src="{{ url_for('static', filename='images/66.png') }}" alt="MetaPDF Logo" class="logo-img">             
+            <a href="#" class="logo">MetaPDF</a>         
+        </div>                  
+        <nav class="navbar">             
+            <a href="#" class="Active">Home</a>             
+            <a href="#">About Us</a>             
+            <a href="#features">Features</a> 
+            <a href="#">How it works</a>                         
+        </nav>     
+    </header>          
+    <!-- Home section with side-by-side layout -->     
+    <section class="home">         
+        <div class="home-content">             
+            <h1>MetaPDF</h1>             
+            <p>                 
+                MetaPDF is your all-in-one intelligent assistant for interacting with PDF documents. Powered by AI, it helps you summarize, chat, and convert PDFs with ease.             
+            </p>             
+            <h3>What You Can Do</h3>             
+            <ul>                 
+                <li><strong>Smart Summarization:</strong> Get concise and clear summaries of lengthy PDFs.</li>                 
+                <li><strong>PDF Chat:</strong> Ask questions and extract key insights directly from documents.</li>                 
+                <li><strong>File Conversion:</strong> Seamlessly convert other form of documents into PDFs</li>             
+            </ul>             
+            <div class="btn-box">                 
+                <a href="#features">Try Now</a>                              
+            </div>         
+        </div>         
+        <div class="Image-container">             
+            <img src="{{ url_for('static', filename='images/124.png') }}" alt="Home Background" class="home-image">         
+        </div>     
+    </section>          
+    <!-- Features section below the home section -->     
+    <section id="features" class="features">         
+        <h2 class="features-title">Our Features</h2>         
+        <div class="image-grid">             
+            <div class="image-container">                 
+                <div class="circle">                     
+                    <a href="{{ url_for('streamlit_bp.streamlit_app') }}">                         
+                        <img src="{{ url_for('static', filename='images/summaryicon.png') }}" alt="PDF Summary Icon">                     
+                    </a>                 
+                </div>                 
+                <h3>PDF Summary</h3>             
+            </div>             
+            <div class="image-container">                 
+                <div class="circle">                     
+                    <a href="{{ url_for('chat_app.index') }}">                         
+                        <img src="{{ url_for('static', filename='images/chat.png') }}" alt="Chat Icon">                     
+                    </a>                 
+                </div>                 
+                <h3>Chat with PDFs</h3>             
+            </div>             
+            <div class="image-container">                 
+                <div class="circle">                     
+                    <a href="{{ url_for('home.convertor')}}">                         
+                        <img src="{{ url_for('static', filename='images/convert.png') }}" alt="PDF Converter Icon">                     
+                    </a>                 
+                </div>                 
+                <h3>PDF Converter</h3>             
+            </div>         
+        </div>     
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all links with hash
+            const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
+            
+            // Add click event listener to each link
+            smoothScrollLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Prevent default anchor click behavior
+                    e.preventDefault();
+                    
+                    // Get the target element
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return; // Skip if href is just "#"
+                    
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // Smooth scroll to target
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body> 
 </html>
