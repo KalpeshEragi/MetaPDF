@@ -13,4 +13,6 @@ comtypes
 werkzeug
 reportlab
 transformers
+requests
+flask-cors
 

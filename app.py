@@ -1,6 +1,9 @@
 from dotenv import load_dotenv
 from flask import Flask
 import os
+from flask_cors import CORS
+
+
 
 from App.home import home_bp
 from App.chat_app import chat_app
@@ -13,8 +16,11 @@ from App.streamlit_embed import streamlit_bp
 # Load environment variables
 load_dotenv()
 
+
+
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Set secret key from environment variables
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
