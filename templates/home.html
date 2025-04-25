@@ -3,11 +3,12 @@
 <head>     
     <meta charset="UTF-8">     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">     
-    <title>Professional Image Grid</title>     
+    <title>MetaPDF - AI Document Processing</title>     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"> 
 </head> 
-<body>     
+<body> 
+    <div class="background-overlay"></div>    
     <header class="header">         
         <div class="logo-container">             
             <img src="{{ url_for('static', filename='images/66.png') }}" alt="MetaPDF Logo" class="logo-img">             
@@ -15,9 +16,9 @@
         </div>                  
         <nav class="navbar">             
             <a href="#" class="Active">Home</a>             
-            <a href="#">About Us</a>             
+            <a href="#about-us">About Us</a>             
             <a href="#features">Features</a> 
-            <a href="#">How it works</a>                         
+            <a href="#how-it-works">How it works</a>                         
         </nav>     
     </header>          
     <!-- Home section with side-by-side layout -->     
@@ -40,7 +41,10 @@
         <div class="Image-container">             
             <img src="{{ url_for('static', filename='images/124.png') }}" alt="Home Background" class="home-image">         
         </div>     
-    </section>          
+    </section>     
+    
+
+
     <!-- Features section below the home section -->     
     <section id="features" class="features">         
         <h2 class="features-title">Our Features</h2>         
@@ -71,6 +75,74 @@
             </div>         
         </div>     
     </section>
+
+    <!-- How it works section -->
+    <section id="how-it-works" class="how-it-works">
+        <h2 class="section-title">How it works</h2>
+        <div class="flowchart-container-column">
+            <div class="flowchart-item">
+                <h3>PDF Summary</h3>
+                <div class="flowchart-image">
+                    <img src="{{ url_for('static', filename='images/FlowSum.png') }}" alt="PDF Summary Flowchart">
+                </div>
+            </div>
+            <div class="flowchart-item">
+                <h3>Chat with PDFs</h3>
+                <div class="flowchart-image">
+                    <img src="{{ url_for('static', filename='images/FlowChat.png') }}" alt="PDF Chat Flowchart">
+                </div>
+            </div>
+            <div class="flowchart-item">
+                <h3>PDF Converter</h3>
+                <div class="flowchart-image">
+                    <img src="{{ url_for('static', filename='images/FlowConv.png') }}" alt="PDF Converter Flowchart">
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- About Us section -->
+        <section id="about-us" class="about-us">
+            <h2 class="section-title">About Us</h2>
+            <div class="about-container">
+                <div class="about-content">
+                    <div class="about-item">
+                        <div class="about-icon">
+                            <img src="{{ url_for('static', filename='images/Vision.jfif') }}" alt="Vision Icon">
+                        </div>
+                        <div class="about-text">
+                            <h3>Our Vision</h3>
+                            <p>Bridging the gap between manual document processing and AI-powered efficiency. We aim to transform how people work with documents by making information extraction and understanding more accessible.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-item">
+                        <div class="about-icon">
+                            <img src="{{ url_for('static', filename='images/Motivation.jfif') }}" alt="Motivation Icon">
+                        </div>
+                        <div class="about-text">
+                            <h3>Our Motivation</h3>
+                            <p>Students, researchers, and professionals often struggle with lengthy documents. We created MetaPDF to provide fast summaries, AI-driven Q&A, and effortless file conversion—all essential tools for modern document processing needs.</p>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="about-item">
+                        <div class="about-icon">
+                            <img src="{{ url_for('static', filename='images/Feature.jfif') }}" alt="Feature Icon">
+                        </div>
+                        <div class="about-text">
+                            <h3>Our Features</h3>
+                            <ul>
+                                <li><strong>Summarization</strong> – AI-powered summaries for full PDFs or selected pages</li>
+                                <li><strong>Chat with PDF</strong> – Ask questions, get answers instantly</li>
+                                <li><strong>File Conversion</strong> – Convert Word, PPT, Excel, or TXT to PDF for easy processing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

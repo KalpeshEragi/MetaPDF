@@ -21,6 +21,8 @@ def main_home():
 @home_bp.route('/convertor')
 def convertor():
     return render_template('convertor.html')
+
+
 # Route for serving static files (optional)
 # @home_bp.route('/static/<path:filename>')
 # def serve_static(filename):

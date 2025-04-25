@@ -83,117 +83,149 @@
             </div>
         </div>
     </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const pdfFile = document.getElementById('pdf-file');
-            const fileName = document.querySelector('.file-name');
-            const pdfUploadForm = document.getElementById('pdf-upload-form');
-            const pdfViewer = document.getElementById('pdf-viewer');
-            const pdfPlaceholder = document.getElementById('pdf-placeholder');
-            const chatForm = document.getElementById('chat-form');
-            const chatHistory = document.getElementById('chat-history');
-            const uploadLoading = document.getElementById('upload-loading');
-            const chatLoading = document.getElementById('chat-loading');
-            const uploadError = document.getElementById('upload-error');
-            const chatError = document.getElementById('chat-error');
 
-            // Handle file selection
-            pdfFile.addEventListener('change', function(e) {
-                if (this.files.length > 0) {
-                    fileName.textContent = this.files[0].name;
-                    handleUpload();
-                } else {
-                    fileName.textContent = 'No file selected';
-                }
-            });
-
-            // Handle file upload
-            async function handleUpload() {
-                uploadError.style.display = 'none';
-                uploadLoading.style.display = 'flex';
-
-                try {
-                    const formData = new FormData(pdfUploadForm);
-                    const response = await fetch('/chat/', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.status === 'success') {
-                        // Show PDF in viewer
-                        const pdfUrl = URL.createObjectURL(pdfFile.files[0]);
-                        pdfPlaceholder.style.display = 'none';
-                        pdfViewer.innerHTML = `<embed src="${pdfUrl}" type="application/pdf" width="100%" height="100%">`;
-                        
-                        // Enable chat interface
-                        chatForm.style.display = 'flex';
-                    } else {
-                        uploadError.textContent = data.message;
-                        uploadError.style.display = 'block';
-                    }
-                } catch (error) {
-                    uploadError.textContent = 'Error uploading PDF. Please try again.';
-                    uploadError.style.display = 'block';
-                } finally {
-                    uploadLoading.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', function() {
+        const pdfFile = document.getElementById('pdf-file');
+        const fileName = document.querySelector('.file-name');
+        const pdfUploadForm = document.getElementById('pdf-upload-form');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const pdfPlaceholder = document.getElementById('pdf-placeholder');
+        const chatForm = document.getElementById('chat-form');
+        const chatHistory = document.getElementById('chat-history');
+        const uploadLoading = document.getElementById('upload-loading');
+        const chatLoading = document.getElementById('chat-loading');
+        const uploadError = document.getElementById('upload-error');
+        const chatError = document.getElementById('chat-error');
+    
+        // Typewriter effect function
+        function typewriterEffect(element, text, speed = 30) {
+            let i = 0;
+            element.innerHTML = ''; // Clear existing content
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
                 }
             }
-
-            // Handle chat submission
-            chatForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const userQuestion = document.getElementById('user-question');
-                chatError.style.display = 'none';
-                chatLoading.style.display = 'flex';
-
-                try {
-                    const formData = new FormData(chatForm);
-                    const response = await fetch('/chat/', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.status === 'success') {
-                        // Add user message
-                        const userMessage = document.createElement('div');
-                        userMessage.className = 'chat-message user-message';
-                        userMessage.innerHTML = `
-                            <div class="message-content">
-                                <p>${userQuestion.value}</p>
-                            </div>
-                        `;
-                        chatHistory.appendChild(userMessage);
-
-                        // Add AI response
-                        const aiMessage = document.createElement('div');
-                        aiMessage.className = 'chat-message ai-message';
-                        aiMessage.innerHTML = `
-                            <div class="message-content">
-                                <p>${data.answer}</p>
-                            </div>
-                        `;
-                        chatHistory.appendChild(aiMessage);
-
-                        // Clear input and scroll to bottom
-                        userQuestion.value = '';
-                        chatHistory.scrollTop = chatHistory.scrollHeight;
-                    } else {
-                        chatError.textContent = data.message;
-                        chatError.style.display = 'block';
-                    }
-                } catch (error) {
-                    chatError.textContent = 'Error sending message. Please try again.';
-                    chatError.style.display = 'block';
-                } finally {
-                    chatLoading.style.display = 'none';
-                }
-            });
+            
+            type();
+        }
+    
+        // Handle file selection - unchanged from original
+        pdfFile.addEventListener('change', function(e) {
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+                handleUpload();
+            } else {
+                fileName.textContent = 'No file selected';
+            }
         });
+    
+        // Handle file upload - unchanged from original
+        async function handleUpload() {
+            uploadError.style.display = 'none';
+            uploadLoading.style.display = 'flex';
+    
+            try {
+                const formData = new FormData(pdfUploadForm);
+                const response = await fetch('/chat/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Show PDF in viewer
+                    const pdfUrl = URL.createObjectURL(pdfFile.files[0]);
+                    pdfPlaceholder.style.display = 'none';
+                    pdfViewer.innerHTML = `<embed src="${pdfUrl}" type="application/pdf" width="100%" height="100%">`;
+                    
+                    // Enable chat interface
+                    chatForm.style.display = 'flex';
+                } else {
+                    uploadError.textContent = data.message;
+                    uploadError.style.display = 'block';
+                }
+            } catch (error) {
+                uploadError.textContent = 'Error uploading PDF. Please try again.';
+                uploadError.style.display = 'block';
+            } finally {
+                uploadLoading.style.display = 'none';
+            }
+        }
+    
+        // Handle chat submission - modified to include typewriter effect
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userQuestion = document.getElementById('user-question');
+            
+            if (!userQuestion.value.trim()) {
+                return; // Don't submit empty questions
+            }
+            
+            const userQuestionText = userQuestion.value;
+            chatError.style.display = 'none';
+            chatLoading.style.display = 'flex';
+    
+            try {
+                // Add user message immediately
+                const userMessage = document.createElement('div');
+                userMessage.className = 'chat-message user-message';
+                userMessage.innerHTML = `
+                    <div class="message-content">
+                        <p>${userQuestionText}</p>
+                    </div>
+                `;
+                chatHistory.appendChild(userMessage);
+                
+                // Clear input and scroll to show user's message
+                userQuestion.value = '';
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+    
+                // Create form data with the question
+                const formData = new FormData();
+                formData.append('user_question', userQuestionText);
+                
+                const response = await fetch('/chat/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Add AI response container
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'chat-message ai-message';
+                    aiMessage.innerHTML = `
+                        <div class="message-content">
+                            <p id="latest-response"></p>
+                        </div>
+                    `;
+                    chatHistory.appendChild(aiMessage);
+                    
+                    // Apply typewriter effect to the response
+                    const responseElement = aiMessage.querySelector('#latest-response');
+                    typewriterEffect(responseElement, data.answer);
+                    
+                    // Scroll to bottom to follow the typing
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                } else {
+                    chatError.textContent = data.message;
+                    chatError.style.display = 'block';
+                }
+            } catch (error) {
+                chatError.textContent = 'Error sending message. Please try again.';
+                chatError.style.display = 'block';
+            } finally {
+                chatLoading.style.display = 'none';
+            }
+        });
+    });
     </script>
 </body>
 </html>

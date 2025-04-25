@@ -14,6 +14,10 @@ body {
     overflow-x: hidden;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 /* Header Styling */
 .header {
     position: fixed;
@@ -187,6 +191,90 @@ body {
     width: 100%;
 }
 
+/* About Us Section */
+.about-us {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6rem 2rem;
+    width: 100%;
+    background: rgba(8, 27, 41, 0.8);
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: #00abf0;
+    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.about-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2.5rem;
+    width: 100%;
+}
+
+.about-item {
+    display: flex;
+    background: rgba(31, 64, 104, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
+.about-icon {
+    flex: 0 0 80px;
+    height: 80px;
+    margin-right: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-icon img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.about-item:hover .about-icon img {
+    opacity: 1;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #00abf0;
+    margin-bottom: 0.5rem;
+}
+
+.about-text p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ededed;
+}
+
 /* Features Section */
 .features {
     display: flex;
@@ -283,6 +371,83 @@ body {
     transform: scale(1.1);
 }
 
+/* How it works section styling - Column Layout */
+.how-it-works {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6rem 2rem;
+    width: 100%;
+}
+
+.flowchart-container-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.flowchart-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 4rem;
+    transition: transform 0.3s ease;
+}
+
+.flowchart-item:last-child {
+    margin-bottom: 0;
+}
+
+.flowchart-item h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.flowchart-image {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
+.flowchart-image:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.flowchart-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.flowchart-item:hover .flowchart-image img {
+    transform: scale(1.02);
+}
+
+/* Background overlay */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/static/Images/bg.jfif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.3; /* Adjust opacity (0 = fully transparent, 1 = fully visible) */
+    z-index: -1; /* Ensures the overlay stays behind all content */
+}
+
 /* Keyframes Animation */
 @keyframes fadeInOut {
     0% {
@@ -294,6 +459,11 @@ body {
     100% {
         opacity: 0.5;
     }
+}
+
+/* Scroll margin for smooth scrolling */
+#features, #about-us, #how-it-works {
+    scroll-margin-top: 80px;
 }
 
 /* Responsive Design */
@@ -320,6 +490,10 @@ body {
     .home-content h3 {
         font-size: 26px;
     }
+
+    .about-content {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
 }
 
 @media (max-width: 768px) {
@@ -332,7 +506,7 @@ body {
         font-size: 16px;
     }
     
-    .features-title {
+    .features-title, .section-title {
         font-size: 2rem;
     }
     
@@ -359,6 +533,25 @@ body {
     
     .btn-box {
         width: 100%;
+    }
+
+    .about-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .about-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .flowchart-item h3 {
+        font-size: 1.5rem;
+    }
+    
+    .flowchart-item {
+        margin-bottom: 3rem;
     }
 }
 
@@ -391,14 +584,20 @@ body {
     .image-container h3 {
         font-size: 1rem;
     }
-}
 
-
-html {
-    scroll-behavior: smooth;
-}
-
-
-#features {
-    scroll-margin-top: 80px; /* Adjust this value based on your header height */
+    .section-title {
+        font-size: 1.8rem;
+    }
+    
+    .about-text h3 {
+        font-size: 1.3rem;
+    }
+    
+    .about-us, .how-it-works {
+        padding: 4rem 1rem;
+    }
+    
+    .flowchart-item {
+        margin-bottom: 2.5rem;
+    }
 }

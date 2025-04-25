@@ -3,11 +3,48 @@ from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
 import PyPDF2
 import torch
 import re
+import time
+import html
 
 # App title and description
 st.set_page_config(page_title="SmartSummarizer", page_icon="📑")
 st.title("📑 Summary Generator")
-st.markdown("*High-quality PDF summarization optimized for RTX 2050*")
+# st.markdown("*High-quality PDF summarization optimized for RTX 2050*")
+
+# Include auto-scrolling JavaScript
+st.markdown("""
+<script>
+// Function to scroll to an element with a specific ID
+function scrollToElement(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+</script>
+""", unsafe_allow_html=True)
+
+# Fixed typing speed for consistent experience
+TYPING_SPEED = 0.01
+
+# Improved typewriter effect with auto-scrolling
+def typewriter_effect(text, container, speed=TYPING_SPEED, element_id="active-typing"):
+    """Display text with a typewriter effect and auto-scroll"""
+    placeholder = container.empty()
+    displayed_text = ""
+    
+    for char in text:
+        displayed_text += char
+        # Use HTML to create an element with a specific ID that we can scroll to
+        html_content = f"""
+        <div style="white-space: pre-wrap;">{html.escape(displayed_text)}
+        <span id="{element_id}" style="opacity: 0;">.</span></div>
+        <script>scrollToElement('{element_id}');</script>
+        """
+        placeholder.markdown(html_content, unsafe_allow_html=True)
+        time.sleep(speed)
+    
+    return displayed_text
 
 # Download and cache the model
 @st.cache_resource
@@ -22,7 +59,7 @@ def load_model():
         # Half-precision to reduce VRAM usage
         if torch.cuda.is_available():
             model = model.half().to("cuda")
-            st.sidebar.success("✅ Using GPU acceleration (optimized)")
+            st.sidebar.success("✅ ")
         else:
             st.sidebar.info("ℹ️ Running on CPU")
             
@@ -216,82 +253,111 @@ if uploaded_file:
                     st.warning("No pages selected for summarization")
                 else:
                     progress_bar = st.progress(0)
+                    
+                    # Create containers for real-time updates
+                    status_container = st.empty()
+                    status_container.info("Starting summarization process...")
+                    
+                    # Container for the results section
+                    results_container = st.container()
+                    
+                    with results_container:
+                        # Container for individual summaries
+                        st.subheader("Individual Page Summaries")
+                        summaries_container = st.container()
+                    
+                    # Placeholder for combined summary text
+                    combined_text = ""
                     summaries = []
                     
-                    with st.spinner("Generating summaries..."):
-                        for i, page_num in enumerate(selected_pages):
-                            idx = page_num - 1
-                            if 0 <= idx < total_pages:
-                                page_text = pages[idx]
-                                if page_text and len(page_text.strip()) > 20:
-                                    summary = generate_smart_summary(page_text, max_length, min_length)
-                                    
-                                    # Calculate metrics
-                                    if show_metrics and summary:
-                                        original_words = len(page_text.split())
-                                        summary_words = len(summary.split())
-                                        compression = round((1 - summary_words/original_words) * 100, 1) if original_words > 0 else 0
-                                        
-                                        summaries.append({
-                                            "page": page_num,
-                                            "summary": summary,
-                                            "metrics": {
-                                                "original_words": original_words,
-                                                "summary_words": summary_words,
-                                                "compression_ratio": compression
-                                            }
-                                        })
-                                    else:
-                                        summaries.append({
-                                            "page": page_num,
-                                            "summary": summary
-                                        })
-                            
-                            # Update progress
-                            progress_bar.progress((i + 1) / len(selected_pages))
-                    
-                    # Display results
-                    if summaries:
-                        st.subheader("📋 Summary Results")
+                    # Process pages one by one and display results immediately
+                    for i, page_num in enumerate(selected_pages):
+                        idx = page_num - 1
+                        current_status = f"Processing page {page_num} of {selected_pages[-1]}..."
+                        status_container.info(current_status)
                         
-                        # Option to combine all summaries
-                        if len(summaries) > 1:
+                        if 0 <= idx < total_pages:
+                            page_text = pages[idx]
+                            if page_text and len(page_text.strip()) > 20:
+                                # Generate summary for this page
+                                summary = generate_smart_summary(page_text, max_length, min_length)
+                                
+                                # Calculate metrics if needed
+                                if show_metrics and summary:
+                                    original_words = len(page_text.split())
+                                    summary_words = len(summary.split())
+                                    compression = round((1 - summary_words/original_words) * 100, 1) if original_words > 0 else 0
+                                    
+                                    summary_data = {
+                                        "page": page_num,
+                                        "summary": summary,
+                                        "metrics": {
+                                            "original_words": original_words,
+                                            "summary_words": summary_words,
+                                            "compression_ratio": compression
+                                        }
+                                    }
+                                else:
+                                    summary_data = {
+                                        "page": page_num,
+                                        "summary": summary
+                                    }
+                                
+                                summaries.append(summary_data)
+                                combined_text += summary + " "
+                                
+                                # Create a unique ID for this page's typing cursor
+                                type_id = f"typing-cursor-page-{page_num}"
+                                
+                                # Display this page's summary immediately
+                                with summaries_container:
+                                    st.markdown(f"### Page {page_num}")
+                                    summary_display = st.container()
+                                    
+                                    # Use the typewriter effect with auto-scrolling
+                                    typewriter_effect(summary, summary_display, TYPING_SPEED, type_id)
+                                    
+                                    if show_metrics and "metrics" in summary_data:
+                                        metrics = summary_data["metrics"]
+                                        st.caption(f"Original: {metrics['original_words']} words → Summary: {metrics['summary_words']} words (Compressed by {metrics['compression_ratio']}%)")
+                                    
+                                    st.download_button(
+                                        f"Download page {page_num} summary",
+                                        summary,
+                                        file_name=f"page_{page_num}_summary.txt",
+                                        key=f"dl_{page_num}"
+                                    )
+                                    st.markdown("---")
+                        
+                        # Update progress
+                        progress_bar.progress((i + 1) / len(selected_pages))
+                    
+                    # Display combined summary if there are multiple pages
+                    if len(summaries) > 1:
+                        with results_container:
+                            st.subheader("📑 Complete Document Summary")
                             show_combined = st.checkbox("Show combined summary")
                             
                             if show_combined:
-                                combined_text = " ".join([s["summary"] for s in summaries if s["summary"]])
-                                st.subheader("📑 Complete Document Summary")
-                                st.markdown(combined_text)
+                                combined_display = st.container()
+                                with st.spinner("Creating combined summary..."):
+                                    # Use typewriter effect with auto-scrolling for combined summary
+                                    typewriter_effect(combined_text, combined_display, TYPING_SPEED, "combined-summary-cursor")
+                                
                                 st.download_button(
                                     "Download complete summary",
                                     combined_text,
                                     file_name="complete_summary.txt"
                                 )
                                 st.markdown("---")
-                        
-                        # Individual page summaries
-                        st.subheader("Individual Page Summaries")
-                        for item in summaries:
-                            st.markdown(f"### Page {item['page']}")
-                            st.markdown(item["summary"])
-                            
-                            if show_metrics and "metrics" in item:
-                                metrics = item["metrics"]
-                                st.caption(f"Original: {metrics['original_words']} words → Summary: {metrics['summary_words']} words (Compressed by {metrics['compression_ratio']}%)")
-                            
-                            st.download_button(
-                                f"Download page {item['page']} summary",
-                                item["summary"],
-                                file_name=f"page_{item['page']}_summary.txt",
-                                key=f"dl_{item['page']}"
-                            )
-                            st.markdown("---")
-                                
-                        st.success("✅ Summarization completed!")
+                    
+                    # Final status update
+                    if summaries:
+                        status_container.success("✅ Summarization completed!")
                     else:
-                        st.warning("⚠️ Could not generate summaries for the selected pages.")
+                        status_container.warning("⚠️ Could not generate summaries for the selected pages.")
 
-# Footer with app information
-st.sidebar.markdown("---")
-st.sidebar.caption("SmartSummarizer Pro v1.0")
-st.sidebar.caption("Optimized for RTX 2050")
+# # Footer with app information
+# st.sidebar.markdown("---")
+# st.sidebar.caption("SmartSummarizer Pro v1.0")
+# st.sidebar.caption("Optimized for RTX 2050")

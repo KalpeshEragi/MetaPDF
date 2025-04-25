@@ -2,9 +2,6 @@ from dotenv import load_dotenv
 from flask import Flask
 import os
 from flask_cors import CORS
-
-
-
 from App.home import home_bp
 from App.chat_app import chat_app
 from App.docx_converter import docx_converter_bp
@@ -15,8 +12,6 @@ from App.streamlit_embed import streamlit_bp
 
 # Load environment variables
 load_dotenv()
-
-
 
 # Initialize Flask app
 app = Flask(__name__)
