@@ -69,16 +69,54 @@ def load_model():
         st.error(f"Error loading model: {e}")
         return None
 
-# Extract text from PDF with better error handling
+# Extract text from PDF with OCR fallback for scanned documents
 def extract_pages(file):
+    """
+    Extract text from PDF using hybrid approach.
+    Uses PyPDF2 for text-based pages, OCR for scanned pages.
+    """
     try:
+        # Try to use hybrid extraction with OCR fallback
+        import sys
+        import os
+        # Add parent directory to path for imports
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        
+        from ocr_processor import hybrid_extract_pages
+        
+        # Read file content
+        file_content = file.read()
+        file.seek(0)
+        
+        # Use hybrid extraction
+        import io
+        pages, ocr_used = hybrid_extract_pages(io.BytesIO(file_content))
+        
+        if ocr_used:
+            st.info("🔍 OCR was used for scanned pages in this PDF")
+        
+        if pages:
+            # Clean the text
+            cleaned_pages = []
+            for text in pages:
+                cleaned = re.sub(r'\s+', ' ', text).strip() if text else ""
+                cleaned_pages.append(cleaned)
+            return cleaned_pages
+        
+    except ImportError as e:
+        st.warning(f"OCR module not available: {e}. Using standard extraction.")
+    except Exception as e:
+        st.warning(f"Hybrid extraction failed: {e}. Falling back to standard extraction.")
+    
+    # Fallback to standard PyPDF2 extraction
+    try:
+        file.seek(0)
         reader = PyPDF2.PdfReader(file)
         pages = []
         
         for i, page in enumerate(reader.pages):
             try:
                 text = page.extract_text()
-                # Clean the text
                 text = re.sub(r'\s+', ' ', text).strip()
                 pages.append(text)
             except Exception as e:
@@ -88,6 +126,7 @@ def extract_pages(file):
     except Exception as e:
         st.error(f"Error processing PDF: {e}")
         return []
+
 
 # Text preprocessing to improve summary quality WITHOUT NLTK dependency
 def preprocess_text(text):

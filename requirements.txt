@@ -15,4 +15,7 @@ reportlab
 transformers
 requests
 flask-cors
-
+easyocr
+pdf2image
+Pillow
+numpy
