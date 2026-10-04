@@ -1,0 +1,23 @@
+{
+  "attention_is_all_you_need": {
+    "pages": 15,
+    "raw_chars": 39472,
+    "raw_words": 5984,
+    "extraction_seconds": 2.111,
+    "n_chunks": 5,
+    "configured_chunk_size": 10000,
+    "configured_chunk_overlap": 1000,
+    "chunk_chars_min": 3562,
+    "chunk_chars_max": 9982,
+    "chunk_chars_mean": 8677.8,
+    "chunking_seconds": 0.0027,
+    "est_chunk_tokens_total_chars_div_4": 10847,
+    "embedding_http_calls": 0,
+    "embedding_texts": 0,
+    "embedding_prompt_tokens_provider_reported": 0,
+    "embedding_seconds_sum": 0,
+    "index_build_seconds_total": 6.83,
+    "index_size_bytes": null,
+    "vector_store_created": false
+  }
+}

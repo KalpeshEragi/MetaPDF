@@ -1,0 +1,164 @@
+{
+  "generated_at": "2026-10-04T20:12:24",
+  "checks": {
+    "python": {
+      "status": "ok",
+      "seconds": 0.51,
+      "version": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+      "executable": "C:\\AllImpprojects\\MetaPDF\\venv\\Scripts\\python.exe",
+      "platform": "Windows-11-10.0.26200-SP0"
+    },
+    "hardware": {
+      "status": "ok",
+      "seconds": 8.96,
+      "cpu_count_logical": 12,
+      "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+      "ram_gb": 16.9,
+      "gpu": "NVIDIA GeForce RTX 2050, 4096 MiB, 577.00",
+      "torch": "2.13.0+cpu",
+      "torch_cuda_available": false
+    },
+    "packages": {
+      "status": "ok",
+      "seconds": 0.06,
+      "versions": {
+        "flask": "3.1.3",
+        "flask-cors": "6.0.5",
+        "langchain": "1.3.18",
+        "langchain-classic": "1.0.8",
+        "langchain-core": "1.6.1",
+        "langchain-community": "0.4.2",
+        "langchain-google-genai": "4.4.0",
+        "langchain-text-splitters": "1.1.2",
+        "google-generativeai": "0.8.6",
+        "google-genai": "2.24.0",
+        "faiss-cpu": "1.15.0",
+        "PyPDF2": "3.0.1",
+        "pypdf": null,
+        "streamlit": "1.64.0",
+        "torch": "2.13.0",
+        "transformers": "5.16.1",
+        "easyocr": "1.7.2",
+        "pdf2image": "1.17.0",
+        "Pillow": "12.3.0",
+        "numpy": "2.5.2",
+        "python-dotenv": "1.2.3",
+        "chromadb": "1.5.9",
+        "pywin32": "312",
+        "comtypes": "1.4.16",
+        "psutil": "7.2.2",
+        "reportlab": "5.0.1"
+      }
+    },
+    "secrets_presence": {
+      "status": "ok",
+      "seconds": 0.01,
+      "env_file_found": true,
+      "keys_present": [
+        "FLASK_SECRET_KEY",
+        "GOOGLE_API_KEY"
+      ]
+    },
+    "legacy_imports_as_used_by_production": {
+      "status": "ok",
+      "seconds": 6.05,
+      "imports": {
+        "langchain.text_splitter": "FAILED: ModuleNotFoundError: No module named 'langchain.text_splitter'",
+        "langchain.chains.question_answering": "FAILED: ModuleNotFoundError: No module named 'langchain.chains'",
+        "langchain.prompts": "FAILED: ModuleNotFoundError: No module named 'langchain.prompts'",
+        "langchain_community.vectorstores": "ok",
+        "langchain_google_genai": "ok",
+        "google.generativeai": "ok",
+        "PyPDF2": "ok",
+        "faiss": "ok",
+        "App.chat_app (production module)": "FAILED: ModuleNotFoundError: No module named 'langchain.text_splitter'"
+      }
+    },
+    "relocated_equivalents_available": {
+      "status": "ok",
+      "seconds": 8.5,
+      "relocated": {
+        "langchain_text_splitters.RecursiveCharacterTextSplitter": true,
+        "langchain_classic.chains.question_answering.load_qa_chain": true,
+        "langchain_core.prompts.PromptTemplate": true,
+        "FAISS.similarity_search default k": 4
+      }
+    },
+    "gemini_model_listing": {
+      "status": "ok",
+      "seconds": 1.34,
+      "configured_models_listed": {
+        "models/gemini-1.5-flash-8b-001": null,
+        "models/embedding-001": null
+      },
+      "listed_embedding_models": [
+        "models/gemini-embedding-001",
+        "models/gemini-embedding-2",
+        "models/gemini-embedding-2-preview"
+      ],
+      "sample_flash_models": [
+        "models/gemini-2.5-flash",
+        "models/gemini-2.5-flash-image",
+        "models/gemini-2.5-flash-lite",
+        "models/gemini-2.5-flash-native-audio-latest",
+        "models/gemini-2.5-flash-native-audio-preview-09-2025",
+        "models/gemini-2.5-flash-native-audio-preview-12-2025",
+        "models/gemini-2.5-flash-preview-tts",
+        "models/gemini-3-flash-preview",
+        "models/gemini-3.1-flash-image",
+        "models/gemini-3.1-flash-image-preview",
+        "models/gemini-3.1-flash-lite",
+        "models/gemini-3.1-flash-lite-image",
+        "models/gemini-3.1-flash-lite-preview",
+        "models/gemini-3.1-flash-live-preview",
+        "models/gemini-3.1-flash-tts-preview",
+        "models/gemini-3.5-flash",
+        "models/gemini-3.5-flash-lite",
+        "models/gemini-3.6-flash",
+        "models/gemini-3.7-flash",
+        "models/gemini-3.8-flash",
+        "models/gemini-3.8-flash-lite-tts",
+        "models/gemini-3.8-flash-tts",
+        "models/gemini-flash-latest",
+        "models/gemini-flash-lite-latest",
+        "models/gemini-omni-1.1-flash"
+      ],
+      "total_models_listed": 61
+    },
+    "gemini_embedding_live_call": {
+      "status": "FAILED",
+      "seconds": 1.74,
+      "error_type": "GoogleGenerativeAIError",
+      "error": "Error embedding content (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/embedding-001 is not found for API version v1beta, or is not supported for embedContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+    },
+    "gemini_generation_live_call": {
+      "status": "FAILED",
+      "seconds": 1.93,
+      "error_type": "GoogleModelNotFoundError",
+      "error": "Error calling model 'models/gemini-1.5-flash-8b-001' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash-8b-001 is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+    },
+    "bart_summarizer": {
+      "status": "ok",
+      "seconds": 0.0,
+      "hf_cache_dir": "C:\\Users\\kalpesh\\.cache\\huggingface\\hub",
+      "bart_in_local_cache": [],
+      "note": "weights not cached; not downloading during environment check (needs approval)"
+    },
+    "ocr": {
+      "status": "ok",
+      "seconds": 6.81,
+      "easyocr_import": "ok",
+      "poppler_pdftoppm_on_path": null,
+      "easyocr_models_cached": [
+        "craft_mlt_25k.pth",
+        "english_g2.pth"
+      ],
+      "pdf2image_rasterize": "FAILED: PDFInfoNotInstalledError: Unable to get page count. Is poppler installed and in PATH?"
+    },
+    "streamlit": {
+      "status": "ok",
+      "seconds": 0.85,
+      "version": "1.64.0"
+    }
+  }
+}
