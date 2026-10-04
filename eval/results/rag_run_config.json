@@ -1,0 +1,29 @@
+{
+  "shim_config": {
+    "legacy_aliases": {
+      "langchain.text_splitter": "langchain_text_splitters",
+      "langchain.chains.question_answering": "langchain_classic.chains.question_answering",
+      "langchain.prompts": "langchain_core.prompts"
+    },
+    "generator": {
+      "model": "qwen3.5:4b",
+      "mode": "non-thinking (think=false)",
+      "options": {
+        "temperature": 0.3,
+        "num_ctx": 16384,
+        "seed": 42,
+        "num_predict": 4096
+      }
+    },
+    "embedder": {
+      "model": "nomic-embed-text",
+      "num_ctx": 8192,
+      "truncate": false,
+      "prefixes": [
+        "search_document: ",
+        "search_query: "
+      ],
+      "batch_size": 8
+    }
+  }
+}
