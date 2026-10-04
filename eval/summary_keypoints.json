@@ -1,0 +1,33 @@
+{
+  "_note": "Fixed BEFORE any summarizer run (2026-10-04). Written from the papers' abstracts/introductions/conclusions and verified against the extracted text. Do not edit after baseline.",
+  "attention_is_all_you_need": [
+    "Proposes the Transformer, a sequence-transduction architecture based solely on attention, dispensing with recurrence and convolutions",
+    "Encoder-decoder structure; each side is a stack of N=6 identical layers combining self-attention and a position-wise feed-forward network",
+    "Uses scaled dot-product attention and multi-head attention (h=8 heads) to attend to different representation subspaces",
+    "Adds sinusoidal positional encodings because the model has no recurrence or convolution to represent token order",
+    "Argues self-attention beats recurrent/convolutional layers on parallelisability (constant sequential operations) and shorter path length for long-range dependencies",
+    "Reaches 28.4 BLEU on WMT 2014 English-to-German (more than 2 BLEU above the best prior results, including ensembles)",
+    "Reaches 41.8 BLEU on WMT 2014 English-to-French, a new single-model state of the art, at a fraction of prior training cost (3.5 days on 8 GPUs)",
+    "Generalises beyond translation: applied successfully to English constituency parsing"
+  ],
+  "rag_lewis": [
+    "Introduces retrieval-augmented generation (RAG): combining parametric memory (a pre-trained seq2seq model) with non-parametric memory (a dense vector index of Wikipedia) for knowledge-intensive NLP tasks",
+    "Retriever is a DPR bi-encoder and the generator is BART-large; the two are fine-tuned end-to-end with the retrieved document treated as a latent variable",
+    "Two formulations: RAG-Sequence (same retrieved document for the whole output) and RAG-Token (different documents per token)",
+    "Knowledge source is a December 2018 Wikipedia dump split into 100-word chunks (about 21 million documents) searched by MIPS with FAISS",
+    "Sets state of the art on open-domain QA (Natural Questions, TriviaQA, WebQuestions, CuratedTrec), outperforming extractive and closed-book approaches",
+    "On MS-MARCO and Jeopardy question generation, RAG produces more factual, specific and diverse text than a BART baseline",
+    "On FEVER fact verification it comes within about 4.3% of state-of-the-art pipelines without retrieval supervision",
+    "The non-parametric memory can be replaced (index hot-swapping) to update the model's knowledge without retraining"
+  ],
+  "constitutional_ai": [
+    "Proposes Constitutional AI: training a harmless AI assistant using AI feedback guided by a short list of principles (a constitution), without human labels identifying harmful outputs",
+    "Two stages: a supervised stage (sample, self-critique, revise, then finetune on the revisions) and an RL stage using AI-generated preference labels (RLAIF)",
+    "Aims for a harmless but non-evasive assistant that explains its objections instead of refusing, reducing the tension between helpfulness and harmlessness",
+    "The authors wrote 16 principles which are randomly sampled during revisions and comparison labelling",
+    "Chain-of-thought reasoning improves the AI's identification of harm and the human-judged performance and transparency of the models",
+    "RL-CAI models achieve better harmlessness at a given level of helpfulness than models trained with human feedback labels (crowdworker Elo comparisons)",
+    "Training data: tens of thousands of human-written red-team prompts (42,496) plus model-generated prompts, and 135,296 human helpfulness prompts",
+    "Discusses broader impacts: scaling supervision and a dual-use risk that the same methods make it easier to train harmful systems"
+  ]
+}
