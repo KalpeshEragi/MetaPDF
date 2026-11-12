@@ -10,12 +10,15 @@ from App.xl_converter import xl_converter_bp
 from App.txt import txt_converter_bp
 from App.streamlit_embed import streamlit_bp  
 
-# Load environment variables
+# Load environment variables (env/.env is the documented location; a root .env also works)
+_root = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.getenv("METAPDF_ENV_FILE") or os.path.join(_root, "env", ".env"))
 load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+app.config["MAX_CONTENT_LENGTH"] = int(os.getenv("MAX_UPLOAD_MB", "50")) * 1024 * 1024
 
 # Set secret key from environment variables
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
@@ -39,4 +42,4 @@ app.register_blueprint(streamlit_bp)  # NEW
 
 # Run
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=os.getenv("FLASK_DEBUG", "0") == "1")
