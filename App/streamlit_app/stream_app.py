@@ -1,6 +1,6 @@
 import streamlit as st
 from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
-import PyPDF2
+import pypdf as PyPDF2  # pypdf is the maintained successor of PyPDF2 (same PdfReader API)
 import torch
 import re
 import time
