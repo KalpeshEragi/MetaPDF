@@ -8,7 +8,7 @@ import os
 import io
 import re
 from typing import List, Tuple, Optional
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 
 # Lazy imports for OCR (loaded only when needed)
 _ocr_reader = None

@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .answer-text { white-space: pre-wrap; }
+        .answer-meta { margin-top: 8px; font-size: 0.78rem; opacity: 0.75; }
+        .answer-sources { margin-top: 6px; font-size: 0.8rem; }
+        .answer-sources summary { cursor: pointer; opacity: 0.8; }
+        .source-item { margin: 6px 0; padding: 6px 8px; border-left: 3px solid rgba(127,127,127,0.4); }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -98,20 +105,52 @@
         const uploadError = document.getElementById('upload-error');
         const chatError = document.getElementById('chat-error');
     
-        // Typewriter effect function
-        function typewriterEffect(element, text, speed = 30) {
+        // Typewriter effect: writes plain text only (textContent), so model output can never inject HTML/JS.
+        // Reveals in word-sized steps and is capped at ~1.5 s so long answers are not slowed down.
+        function typewriterEffect(element, text, onDone) {
+            const words = text.split(/(\s+)/);
+            const step = Math.max(1, Math.ceil(words.length / 75));
             let i = 0;
-            element.innerHTML = ''; // Clear existing content
-            
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
+            element.textContent = '';
+            (function type() {
+                if (i < words.length) {
+                    element.textContent += words.slice(i, i + step).join('');
+                    i += step;
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                    setTimeout(type, 20);
+                } else if (onDone) { onDone(); }
+            })();
+        }
+
+        function el(tag, cls, text) {
+            const e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (text !== undefined) e.textContent = text;
+            return e;
+        }
+
+        // Sources + token/cost line under each answer (built with textContent, never innerHTML).
+        function renderMeta(container, data) {
+            const u = data.usage || {}, lat = data.latency_ms || {};
+            const cost = (u.cost_usd === null || u.cost_usd === undefined) ? 'n/a' : '$' + Number(u.cost_usd).toFixed(6);
+            const parts = [
+                (data.citations && data.citations.length) ? 'Sources: ' + data.citations.join(', ') : null,
+                `${u.input_tokens ?? 0} in / ${u.output_tokens ?? 0} out tokens`,
+                `cost ${cost}${u.cached ? ' (cached, 0 API calls)' : ''}`,
+                lat.total ? `${(lat.total / 1000).toFixed(1)} s` : null,
+            ].filter(Boolean);
+            container.appendChild(el('div', 'answer-meta', parts.join(' · ')));
+            if (data.sources && data.sources.length) {
+                const det = el('details', 'answer-sources');
+                det.appendChild(el('summary', null, 'Show retrieved excerpts'));
+                data.sources.forEach(s => {
+                    const item = el('div', 'source-item');
+                    item.appendChild(el('strong', null, `#${s.rank} (${s.pages}) `));
+                    item.appendChild(el('span', null, s.text.length > 600 ? s.text.slice(0, 600) + '…' : s.text));
+                    det.appendChild(item);
+                });
+                container.appendChild(det);
             }
-            
-            type();
         }
     
         // Handle file selection - unchanged from original
@@ -142,10 +181,23 @@
                     // Show PDF in viewer
                     const pdfUrl = URL.createObjectURL(pdfFile.files[0]);
                     pdfPlaceholder.style.display = 'none';
-                    pdfViewer.innerHTML = `<embed src="${pdfUrl}" type="application/pdf" width="100%" height="100%">`;
-                    
+                    pdfViewer.replaceChildren();
+                    const embed = document.createElement('embed');
+                    embed.src = pdfUrl; embed.type = 'application/pdf'; embed.width = '100%'; embed.height = '100%';
+                    pdfViewer.appendChild(embed);
+
                     // Enable chat interface
                     chatForm.style.display = 'flex';
+                    if (data.document) {
+                        const d = data.document;
+                        const note = el('div', 'chat-message ai-message');
+                        const c = el('div', 'message-content');
+                        c.appendChild(el('p', null, `Indexed "${d.title}": ${d.pages} pages → ${d.n_chunks} chunks` +
+                            (d.reused_existing_index ? ' (already indexed, reused instantly).' : ` in ${d.seconds}s.`) +
+                            ' Ask me anything — answers cite page numbers.'));
+                        note.appendChild(c);
+                        chatHistory.appendChild(note);
+                    }
                 } else {
                     uploadError.textContent = data.message;
                     uploadError.style.display = 'block';
@@ -173,13 +225,10 @@
     
             try {
                 // Add user message immediately
-                const userMessage = document.createElement('div');
-                userMessage.className = 'chat-message user-message';
-                userMessage.innerHTML = `
-                    <div class="message-content">
-                        <p>${userQuestionText}</p>
-                    </div>
-                `;
+                const userMessage = el('div', 'chat-message user-message');
+                const userContent = el('div', 'message-content');
+                userContent.appendChild(el('p', null, userQuestionText));
+                userMessage.appendChild(userContent);
                 chatHistory.appendChild(userMessage);
                 
                 // Clear input and scroll to show user's message
@@ -199,18 +248,14 @@
                 
                 if (data.status === 'success') {
                     // Add AI response container
-                    const aiMessage = document.createElement('div');
-                    aiMessage.className = 'chat-message ai-message';
-                    aiMessage.innerHTML = `
-                        <div class="message-content">
-                            <p id="latest-response"></p>
-                        </div>
-                    `;
+                    const aiMessage = el('div', 'chat-message ai-message');
+                    const aiContent = el('div', 'message-content');
+                    const responseElement = el('p', 'answer-text');
+                    aiContent.appendChild(responseElement);
+                    aiMessage.appendChild(aiContent);
                     chatHistory.appendChild(aiMessage);
-                    
-                    // Apply typewriter effect to the response
-                    const responseElement = aiMessage.querySelector('#latest-response');
-                    typewriterEffect(responseElement, data.answer);
+
+                    typewriterEffect(responseElement, data.answer, () => renderMeta(aiContent, data));
                     
                     // Scroll to bottom to follow the typing
                     chatHistory.scrollTop = chatHistory.scrollHeight;
