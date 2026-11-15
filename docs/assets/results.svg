@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="588" viewBox="0 0 1200 588" role="img" aria-labelledby="t d">
+  <title id="t">Original vs upgraded MetaPDF</title>
+  <desc id="d">Same Gemini model and the same 40 questions. Right evidence retrieved: 71.4% to 94.3%; Ranking quality (MRR): 0.488 to 0.780; Groundedness: 0.82 to 0.92; Answers with an unsupported claim: 50.0% to 14.3%; False “not in the document”: 9 to 1; Input tokens per question: 10,525 to 2,751; Cost per 1,000 questions: $3.89 to $0.99; Gemini latency (median): 20.5 s to 7.4 s.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A0F1F"/><stop offset="1" stop-color="#121A36"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+    <clipPath id="card"><rect width="1200" height="588" rx="20"/></clipPath>
+  </defs>
+  <style>
+    .sans { font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Inter", Helvetica, Arial, sans-serif; }
+    .mono { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "SF Mono", Menlo, monospace; }
+  </style>
+  <g clip-path="url(#card)"><rect width="1200" height="588" fill="url(#bg)"/></g>
+  <rect x="0.5" y="0.5" width="1199" height="587" rx="20" fill="none" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <g class="sans">
+    <text x="48" y="60" font-size="26" font-weight="700" fill="#F8FAFC">Original design vs upgraded</text>
+    <text x="48" y="88" font-size="15" fill="#94A3B8">Same Gemini model · same 5 papers · same 40 questions with gold evidence quotes</text>
+    <rect x="860" y="46" width="14" height="14" rx="4" fill="#475569"/>
+    <text x="882" y="58" font-size="14" fill="#CBD5E1">Original</text>
+    <rect x="960" y="46" width="14" height="14" rx="4" fill="url(#accent)"/>
+    <text x="982" y="58" font-size="14" fill="#CBD5E1">Upgraded</text>
+    <line x1="48" y1="112" x2="1152" y2="112" stroke="#FFFFFF" stroke-opacity="0.07"/>
+    <rect x="32" y="124" width="1136" height="54" rx="10" fill="#FFFFFF" fill-opacity="0.022"/>
+    <text x="48" y="146" font-size="15.5" font-weight="600" fill="#E2E8F0">Right evidence retrieved</text>
+    <text x="48" y="166" font-size="12.5" fill="#64748B">hit@5 · higher is better</text>
+    <rect x="380" y="134" width="409" height="13" rx="6.5" fill="#475569"/>
+    <text x="799" y="145" class="mono" font-size="12.5" fill="#94A3B8">71.4%</text>
+    <rect x="380" y="152" width="540" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="930" y="163" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">94.3%</text>
+    <rect x="1024" y="135" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">+23 pts</text>
+    <text x="48" y="200" font-size="15.5" font-weight="600" fill="#E2E8F0">Ranking quality (MRR)</text>
+    <text x="48" y="220" font-size="12.5" fill="#64748B">higher is better</text>
+    <rect x="380" y="188" width="338" height="13" rx="6.5" fill="#475569"/>
+    <text x="728" y="199" class="mono" font-size="12.5" fill="#94A3B8">0.488</text>
+    <rect x="380" y="206" width="540" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="930" y="217" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">0.780</text>
+    <rect x="1024" y="189" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="208" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">+60%</text>
+    <rect x="32" y="232" width="1136" height="54" rx="10" fill="#FFFFFF" fill-opacity="0.022"/>
+    <text x="48" y="254" font-size="15.5" font-weight="600" fill="#E2E8F0">Groundedness</text>
+    <text x="48" y="274" font-size="12.5" fill="#64748B">sentences backed by excerpts</text>
+    <rect x="380" y="242" width="481" height="13" rx="6.5" fill="#475569"/>
+    <text x="871" y="253" class="mono" font-size="12.5" fill="#94A3B8">0.82</text>
+    <rect x="380" y="260" width="540" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="930" y="271" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">0.92</text>
+    <rect x="1024" y="243" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="262" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">+10 pts</text>
+    <text x="48" y="308" font-size="15.5" font-weight="600" fill="#E2E8F0">Answers with an unsupported claim</text>
+    <text x="48" y="328" font-size="12.5" fill="#64748B">lower is better</text>
+    <rect x="380" y="296" width="540" height="13" rx="6.5" fill="#475569"/>
+    <text x="930" y="307" class="mono" font-size="12.5" fill="#94A3B8">50.0%</text>
+    <rect x="380" y="314" width="154" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="544" y="325" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">14.3%</text>
+    <rect x="1024" y="297" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="316" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">3.5× fewer</text>
+    <rect x="32" y="340" width="1136" height="54" rx="10" fill="#FFFFFF" fill-opacity="0.022"/>
+    <text x="48" y="362" font-size="15.5" font-weight="600" fill="#E2E8F0">False “not in the document”</text>
+    <text x="48" y="382" font-size="12.5" fill="#64748B">on 35 answerable questions</text>
+    <rect x="380" y="350" width="540" height="13" rx="6.5" fill="#475569"/>
+    <text x="930" y="361" class="mono" font-size="12.5" fill="#94A3B8">9</text>
+    <rect x="380" y="368" width="60" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="450" y="379" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">1</text>
+    <rect x="1024" y="351" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="370" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">9× fewer</text>
+    <text x="48" y="416" font-size="15.5" font-weight="600" fill="#E2E8F0">Input tokens per question</text>
+    <text x="48" y="436" font-size="12.5" fill="#64748B">lower is better</text>
+    <rect x="380" y="404" width="540" height="13" rx="6.5" fill="#475569"/>
+    <text x="930" y="415" class="mono" font-size="12.5" fill="#94A3B8">10,525</text>
+    <rect x="380" y="422" width="141" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="531" y="433" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">2,751</text>
+    <rect x="1024" y="405" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="424" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">−74%</text>
+    <rect x="32" y="448" width="1136" height="54" rx="10" fill="#FFFFFF" fill-opacity="0.022"/>
+    <text x="48" y="470" font-size="15.5" font-weight="600" fill="#E2E8F0">Cost per 1,000 questions</text>
+    <text x="48" y="490" font-size="12.5" fill="#64748B">paid-tier Gemini price</text>
+    <rect x="380" y="458" width="540" height="13" rx="6.5" fill="#475569"/>
+    <text x="930" y="469" class="mono" font-size="12.5" fill="#94A3B8">$3.89</text>
+    <rect x="380" y="476" width="137" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="527" y="487" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">$0.99</text>
+    <rect x="1024" y="459" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="478" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">−75%</text>
+    <text x="48" y="524" font-size="15.5" font-weight="600" fill="#E2E8F0">Gemini latency (median)</text>
+    <text x="48" y="544" font-size="12.5" fill="#64748B">lower is better</text>
+    <rect x="380" y="512" width="540" height="13" rx="6.5" fill="#475569"/>
+    <text x="930" y="523" class="mono" font-size="12.5" fill="#94A3B8">20.5 s</text>
+    <rect x="380" y="530" width="195" height="13" rx="6.5" fill="url(#accent)"/>
+    <text x="585" y="541" class="mono" font-size="12.5" font-weight="700" fill="#F8FAFC">7.4 s</text>
+    <rect x="1024" y="513" width="128" height="28" rx="14" fill="#34D399" fill-opacity="0.12" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="1088" y="532" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6EE7B7">2.8× faster</text>
+  </g>
+</svg>

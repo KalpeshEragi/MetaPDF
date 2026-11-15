@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="t d">
+  <title id="t">MetaPDF RAG architecture</title>
+  <desc id="d">Ingestion: PDF, pypdf per-page text, sentence-aligned 512-token chunks, contextual header, then a bge-small FAISS index and a BM25 index. Query: question plus previous question for follow-ups, dense and BM25 top 30, reciprocal rank fusion, bge reranker top 5, grounded prompt to Gemini 3.5 Flash-Lite, answer with page citations. Tokens, cost and latency are logged on every request.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A0F1F"/><stop offset="1" stop-color="#121A36"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+    <linearGradient id="api" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A1F5C"/><stop offset="1" stop-color="#1B2550"/></linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#64748B"/>
+    </marker>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#FFFFFF" stroke-opacity="0.03"/></pattern>
+    <clipPath id="card"><rect width="1200" height="700" rx="20"/></clipPath>
+  </defs>
+  <style>
+    .sans { font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Inter", Helvetica, Arial, sans-serif; }
+    .mono { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "SF Mono", Menlo, monospace; }
+    .box { fill: #131B36; stroke: #2A3558; }
+    .h { font-size: 14.5px; font-weight: 700; fill: #F1F5F9; }
+    .s { font-size: 12px; fill: #94A3B8; }
+    .lane { fill: #FFFFFF; fill-opacity: 0.025; stroke: #FFFFFF; stroke-opacity: 0.07; }
+    .lt { font-size: 12.5px; letter-spacing: 1.4px; fill: #94A3B8; font-weight: 600; }
+    .wire { stroke: #64748B; stroke-width: 1.6; fill: none; }
+  </style>
+  <g clip-path="url(#card)"><rect width="1200" height="700" fill="url(#bg)"/><rect width="1200" height="700" fill="url(#grid)"/></g>
+  <rect x="0.5" y="0.5" width="1199" height="699" rx="20" fill="none" stroke="#FFFFFF" stroke-opacity="0.08"/>
+
+  <g class="sans">
+    <text x="48" y="54" font-size="26" font-weight="700" fill="#F8FAFC">How a question becomes a cited answer</text>
+    <!-- legend -->
+    <circle cx="866" cy="47" r="5" fill="#34D399"/><text x="878" y="52" font-size="13.5" fill="#CBD5E1">local GPU · free</text>
+    <circle cx="1010" cy="47" r="5" fill="#A78BFA"/><text x="1022" y="52" font-size="13.5" fill="#CBD5E1">Gemini API</text>
+
+    <!-- ============ LANE 1: INGESTION ============ -->
+    <rect class="lane" x="32" y="80" width="1136" height="210" rx="16"/>
+    <text class="mono lt" x="56" y="110">STEP 1 · INGESTION · ONCE PER PDF · CACHED BY SHA-256</text>
+
+    <rect class="box" x="56" y="140" width="164" height="76" rx="12"/>
+    <text class="h" x="76" y="172">PDF upload</text>
+    <text class="s" x="76" y="194">hash → reuse index</text>
+
+    <rect class="box" x="248" y="140" width="164" height="76" rx="12"/>
+    <text class="h" x="268" y="172">Extract pages</text>
+    <text class="s" x="268" y="194">pypdf, text per page</text>
+
+    <rect class="box" x="440" y="140" width="176" height="76" rx="12"/>
+    <text class="h" x="460" y="172">Chunk</text>
+    <text class="s" x="460" y="194">512 tokens · 64 overlap</text>
+    <text class="s" x="460" y="208" font-size="11">cut on sentence ends</text>
+
+    <rect class="box" x="644" y="140" width="176" height="76" rx="12"/>
+    <text class="h" x="664" y="172">Contextual header</text>
+    <text class="s mono" x="664" y="196" font-size="11.5">"title | p. 4" + text</text>
+
+    <rect class="box" x="864" y="124" width="280" height="58" rx="12"/>
+    <circle cx="884" cy="146" r="4.5" fill="#34D399"/>
+    <text class="h" x="898" y="151">Dense index</text>
+    <text class="s" x="898" y="170">bge-small-en-v1.5 → FAISS (cosine)</text>
+
+    <rect class="box" x="864" y="198" width="280" height="58" rx="12"/>
+    <circle cx="884" cy="220" r="4.5" fill="#34D399"/>
+    <text class="h" x="898" y="225">Keyword index</text>
+    <text class="s" x="898" y="244">BM25 · exact terms like "P100", "540B"</text>
+
+    <path class="wire" d="M220 178H244" marker-end="url(#arr)"/>
+    <path class="wire" d="M412 178H436" marker-end="url(#arr)"/>
+    <path class="wire" d="M616 178H640" marker-end="url(#arr)"/>
+    <path class="wire" d="M820 178C842 178 838 153 860 153" marker-end="url(#arr)"/>
+    <path class="wire" d="M820 178C842 178 838 227 860 227" marker-end="url(#arr)"/>
+    <text class="s mono" x="56" y="268" font-size="11.5" fill="#64748B">stored as JSON + NumPy in data/rag_index/&lt;sha256&gt;_&lt;settings-hash&gt;/ · no pickle · re-upload costs 0</text>
+
+    <!-- ============ LANE 2: QUERY ============ -->
+    <rect class="lane" x="32" y="310" width="1136" height="270" rx="16"/>
+    <text class="mono lt" x="56" y="340">STEP 2 · QUESTION → ANSWER · EVERY REQUEST</text>
+
+    <rect class="box" x="56" y="400" width="150" height="76" rx="12"/>
+    <text class="h" x="76" y="432">Question</text>
+    <text class="s" x="76" y="454">from the chat UI</text>
+
+    <rect class="box" x="230" y="400" width="164" height="76" rx="12"/>
+    <text class="h" x="250" y="432">Follow-up?</text>
+    <text class="s" x="250" y="452">"its decoder" → add</text>
+    <text class="s" x="250" y="467">the previous question</text>
+
+    <rect class="box" x="420" y="362" width="164" height="62" rx="12"/>
+    <circle cx="440" cy="384" r="4.5" fill="#34D399"/>
+    <text class="h" x="454" y="389">Dense top-30</text>
+    <text class="s" x="440" y="410">meaning match</text>
+
+    <rect class="box" x="420" y="452" width="164" height="62" rx="12"/>
+    <circle cx="440" cy="474" r="4.5" fill="#34D399"/>
+    <text class="h" x="454" y="479">BM25 top-30</text>
+    <text class="s" x="440" y="500">keyword match</text>
+
+    <rect class="box" x="610" y="400" width="164" height="76" rx="12"/>
+    <text class="h" x="630" y="432">Fuse (RRF)</text>
+    <text class="s mono" x="630" y="454" font-size="11.5">Σ 1 / (60 + rank)</text>
+
+    <rect class="box" x="800" y="400" width="164" height="76" rx="12"/>
+    <circle cx="820" cy="427" r="4.5" fill="#34D399"/>
+    <text class="h" x="834" y="432">Rerank → top-5</text>
+    <text class="s" x="820" y="454">bge-reranker-base</text>
+    <text class="s" x="820" y="469">reads Q + chunk together</text>
+
+    <rect x="990" y="400" width="154" height="76" rx="12" fill="url(#api)" stroke="#7C6CF0" stroke-opacity="0.7"/>
+    <circle cx="1010" cy="427" r="4.5" fill="#A78BFA"/>
+    <text class="h" x="1024" y="432">Gemini</text>
+    <text class="s" x="1010" y="452" fill="#C4B5FD">3.5 Flash-Lite</text>
+    <text class="s" x="1010" y="467" fill="#C4B5FD">grounded prompt</text>
+
+    <path class="wire" d="M206 438H226" marker-end="url(#arr)"/>
+    <path class="wire" d="M394 438C408 438 404 393 416 393" marker-end="url(#arr)"/>
+    <path class="wire" d="M394 438C408 438 404 483 416 483" marker-end="url(#arr)"/>
+    <path class="wire" d="M584 393C598 393 594 438 606 438" marker-end="url(#arr)"/>
+    <path class="wire" d="M584 483C598 483 594 438 606 438" marker-end="url(#arr)"/>
+    <path class="wire" d="M774 438H796" marker-end="url(#arr)"/>
+    <path class="wire" d="M964 438H986" marker-end="url(#arr)"/>
+    <path class="wire" d="M1067 476V516" marker-end="url(#arr)"/>
+
+    <!-- answer strip -->
+    <rect x="610" y="520" width="534" height="44" rx="12" fill="#34D399" fill-opacity="0.08" stroke="#34D399" stroke-opacity="0.35"/>
+    <text x="630" y="547" font-size="14" font-weight="600" fill="#A7F3D0">Answer with <tspan class="mono" fill="#6EE7B7">[p. 4]</tspan> citations — or a clean “not in the document”</text>
+    <text class="s" x="56" y="550" fill="#64748B">searches the indexes built in step 1</text>
+
+    <!-- ============ LANE 3: MEASURED ============ -->
+    <rect class="lane" x="32" y="600" width="1136" height="74" rx="16"/>
+    <text class="mono lt" x="56" y="630">STEP 3</text>
+    <text class="s" x="56" y="652">measured per request</text>
+
+    <g font-size="13" fill="#E2E8F0">
+      <rect x="200" y="618" width="180" height="38" rx="10" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.09"/>
+      <text x="290" y="642" text-anchor="middle">Exact tokens (usage)</text>
+      <rect x="392" y="618" width="150" height="38" rx="10" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.09"/>
+      <text x="467" y="642" text-anchor="middle">$ cost per answer</text>
+      <rect x="554" y="618" width="170" height="38" rx="10" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.09"/>
+      <text x="639" y="642" text-anchor="middle">Latency per stage</text>
+      <rect x="736" y="618" width="168" height="38" rx="10" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.09"/>
+      <text x="820" y="642" text-anchor="middle">Disk cache (sha256)</text>
+      <rect x="916" y="618" width="228" height="38" rx="10" fill="#34D399" fill-opacity="0.08" stroke="#34D399" stroke-opacity="0.35"/>
+      <circle cx="936" cy="637" r="4.5" fill="#34D399"/>
+      <text x="1040" y="642" text-anchor="middle">NLI hallucination check (eval)</text>
+    </g>
+  </g>
+</svg>
