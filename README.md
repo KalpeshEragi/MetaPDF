@@ -1,40 +1,60 @@
-# 📑 MetaPDF: Chat with PDFs using an evaluated RAG pipeline
+<p align="center">
+  <img src="docs/assets/hero.svg" alt="MetaPDF: evaluated RAG for document Q&A. Evidence retrieved 71% to 94%, unsupported answers 50% to 14%, input tokens cut 74%." width="100%">
+</p>
 
-MetaPDF is a Flask web app with three tools:
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white">
+  <img alt="Flask" src="https://img.shields.io/badge/Flask-web%20app-000000?logo=flask&logoColor=white">
+  <img alt="Gemini" src="https://img.shields.io/badge/Gemini-3.5%20Flash--Lite-8E75B2?logo=googlegemini&logoColor=white">
+  <img alt="FAISS + BM25" src="https://img.shields.io/badge/Retrieval-FAISS%20%2B%20BM25-0EA5E9">
+  <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-CUDA%20optional-EE4C2C?logo=pytorch&logoColor=white">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-13%20passing-34D399">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-64748B">
+</p>
 
-1. **Chat with a PDF.** A retrieval-augmented generation (RAG) pipeline with hybrid search, a reranker, page
-   citations and a hallucination check, plus token and cost accounting.
-2. **Summarize a PDF** with a local BART model (Streamlit), with OCR for scanned pages.
-3. **Convert** DOCX, PPTX, XLSX and TXT files to PDF.
-
-What makes this project different from a tutorial RAG app is that **every design choice is measured**. A fixed
-evaluation set of 5 research papers and 40 questions with gold evidence quotes scores retrieval quality, answer
-quality, hallucination rate, tokens, cost and latency for the original design and the upgraded one.
-
-> 📘 **Want the full story?** [`docs/RAG_UPGRADE_JOURNAL.md`](docs/RAG_UPGRADE_JOURNAL.md) explains every decision,
-> experiment, mistake and fix step by step, written for a student.
+<p align="center">
+  <a href="#-results">Results</a> ·
+  <a href="#-how-it-works">How it works</a> ·
+  <a href="#-the-rag-concepts-explained-simply">Concepts</a> ·
+  <a href="#-quick-start">Quick start</a> ·
+  <a href="#-evaluation">Evaluation</a> ·
+  <a href="#-contributing">Contributing</a> ·
+  <a href="docs/RAG_UPGRADE_JOURNAL.md">Journal</a>
+</p>
 
 ---
 
-## 📊 Results: original design vs upgraded
+**MetaPDF** lets you upload a PDF and ask questions about it. Each answer cites the pages it came from. When the
+answer isn't in the document, it says so instead of making something up.
 
-### Retrieval (offline, 35 answerable questions, no LLM calls)
-Each row adds one technique to the row above it ([full table](eval/results/retrieval_ablation.md)).
+What sets it apart from a tutorial RAG app is that **every design choice is measured**. A fixed test set of
+**5 research papers and 40 questions**, each with gold evidence quotes, scores retrieval quality, answer quality,
+hallucination rate, tokens, cost and latency. The original design and the upgraded one are scored on the same set.
 
-| Configuration | Evidence hit@k | Recall@k | MRR | Context tokens / question |
-|---|---|---|---|---|
-| Original: 10k-char chunks, dense only, k=4 | 0.714 | 0.648 | 0.488 | 9,454 |
-| + 512-token sentence chunks with page metadata | 0.714 | 0.635 | 0.553 | 2,384 |
-| + contextual headers (title, page) | 0.829 | 0.764 | 0.587 | 2,401 |
-| + hybrid BM25 + dense (Reciprocal Rank Fusion) | 0.886 | 0.778 | 0.652 | 2,410 |
-| + cross-encoder reranker | 0.914 | 0.835 | 0.754 | 2,408 |
-| **+ history-aware follow-ups (final)** | **0.943** | **0.864** | **0.780** | **2,409** |
+The app also includes two smaller tools: a **PDF summarizer** (local BART, with OCR for scanned pages) and an
+**Office → PDF converter** (DOCX, PPTX, XLSX, TXT).
 
-### End-to-end answers with Gemini (40 questions, same LLM for both)
+> 📘 **Want the full story?** [`docs/RAG_UPGRADE_JOURNAL.md`](docs/RAG_UPGRADE_JOURNAL.md) explains every decision,
+> experiment, mistake and fix, step by step, written for a student.
+
+## 📊 Results
+
+<p align="center">
+  <img src="docs/assets/results.svg" alt="Original vs upgraded: evidence retrieved 71.4% to 94.3%, MRR 0.488 to 0.780, groundedness 0.82 to 0.92, answers with unsupported claim 50.0% to 14.3%, false refusals 9 to 1, input tokens 10,525 to 2,751, cost per 1,000 questions $3.89 to $0.99, latency 20.5 s to 7.4 s." width="100%">
+</p>
+
+The original prompt told the model to fall back on "relevant knowledge". So on questions the paper can't answer, it
+said the answer wasn't there and then answered from memory anyway. The upgraded system refuses cleanly and cites a
+page for everything it states.
+
+<details>
+<summary><b>Same results as a table</b></summary>
 
 | Metric | Original | Upgraded |
 |---|---|---|
-| Answers containing an unsupported (hallucinated) claim | 50.0% | **14.3%** |
+| Right evidence retrieved (hit@k, 35 answerable questions) | 71.4% | **94.3%** |
+| Ranking quality (MRR) | 0.488 | **0.780** |
+| Answers containing an unsupported claim | 50.0% | **14.3%** |
 | Groundedness (answer sentences supported by the excerpts) | 0.82 | **0.92** |
 | Unanswerable questions, rubric score 0–2 | 1.0 | **2.0** |
 | False "not in the document" on answerable questions | 9 / 35 | **1 / 35** |
@@ -42,73 +62,104 @@ Each row adds one technique to the row above it ([full table](eval/results/retri
 | Input tokens per question | 10,525 | **2,751 (−74%)** |
 | Output tokens per answer | 292 | **65 (−78%)** |
 | Cost per 1,000 questions (paid-tier price) | $3.89 | **$0.99 (−75%)** |
-| Gemini latency p50 | 20.5 s | **7.4 s** |
+| Gemini latency, median | 20.5 s | **7.4 s** |
 
-The original prompt told the model to fall back on "relevant knowledge", so on unanswerable questions it refused and
-then answered from memory anyway. The upgraded system refuses cleanly and cites pages for everything it states.
+Both systems use the same Gemini model, because the original one has been retired.
 
-*Hallucination is scored by a local NLI model (DeBERTa-v3 ensemble, sentence-level premises) that checks every
-answer sentence against the retrieved excerpts, so the generator never grades itself. Completeness checks the question's key facts. See
-[`eval/RUBRIC.md`](eval/RUBRIC.md) and the journal for method and caveats (35–40 questions means about ±3 points per question).*
+</details>
 
----
+## 🧠 How it works
 
-## 🧠 RAG architecture
+<p align="center">
+  <img src="docs/assets/architecture.svg" alt="Architecture. Ingestion: PDF, pypdf, 512-token sentence chunks, contextual header, then a bge-small FAISS index and a BM25 index. Query: question plus previous question for follow-ups, dense and BM25 top-30, RRF fusion, bge reranker top-5, Gemini with a grounded prompt, answer with page citations." width="100%">
+</p>
 
-```
-                 ┌──────────────── ingestion (once per PDF, cached by SHA-256) ─────────────────┐
-  PDF ─► pypdf (per page) ─► sentence-aligned 512-token chunks + page numbers + "title | page" header
-                 └─► bge-small embeddings (local GPU) ─► FAISS      └─► BM25 keyword index
-                 └──────────────────────────────────────────────────────────────────────────────┘
+Only the final answer calls an API. Embeddings, the reranker and the hallucination checker all run locally, on
+the GPU when there is one. Gemini responses are disk-cached by a SHA-256 of the prompt, so re-running costs zero
+requests. That is why the whole project was built and evaluated on the Gemini free tier.
 
-  question ─► (follow-up? + previous question) ─┬─► dense top-30 ─┐
-                                                 └─► BM25  top-30 ─┴─► RRF fusion ─► bge-reranker ─► top-5
-  top-5 excerpts + grounded prompt ("only these excerpts, cite pages, say when not found")
-            ─► Gemini 3.5 Flash-Lite ─► answer with [p. N] citations
-            ─► metrics log: exact tokens (usage_metadata), $ cost, latency per stage
-```
+## 🎓 The RAG concepts explained simply
 
-| Component | Choice | Why |
+| Concept | In plain English | What it did here |
 |---|---|---|
-| Embeddings | `BAAI/bge-small-en-v1.5`, local | 0 API calls to index; with BM25 + reranker it scores the same as bge-base (3× larger) and MiniLM on this eval |
-| Keyword search | BM25 (`rank_bm25`) | exact tokens (`WMT 2014`, `P100`, `540B`) that embeddings miss; on this corpus BM25 alone beat dense alone, and removing it from the final system lowers MRR 0.78 → 0.72 |
-| Fusion | Reciprocal Rank Fusion (k=60) | merges rankings without calibrating scores |
-| Reranker | `BAAI/bge-reranker-base` cross-encoder | biggest MRR gain (0.65 → 0.75) for ~380 ms on a laptop GPU |
-| LLM | `gemini-3.5-flash-lite` | only the final answer uses the API, and responses are disk-cached |
-| Hallucination check | NLI ensemble (`nli-deberta-v3` base + small) | offline, free, independent of the generator; checked on hand-made true and false claims first |
-| Storage | per-document folder `data/rag_index/<sha256>_<settings-hash>/` with JSON and NumPy | no pickle; re-uploading a file costs 0; users never overwrite each other |
+| **Chunking** | A whole paper is too long to send to the model, so it is cut into pieces. Smaller pieces mean the model reads less irrelevant text. | 10,000-char chunks became 512-token chunks cut at sentence ends, each with its page range. Context per question fell from **9,454 to 2,384 tokens** and MRR went *up* (0.488 → 0.553). |
+| **Contextual headers** | A chunk that says "our model gets 28.4 BLEU" doesn't say *which* model. Prefixing the paper title and page fixes that. | Every chunk is indexed as `"title \| p. 4" + text`. Hit rate **0.71 → 0.83**, the biggest jump in hit rate. |
+| **Dense retrieval** | Turn text into vectors so "how fast was training" finds "3.5 days on 8 P100 GPUs" even with no shared words. | `bge-small-en-v1.5` embeddings in a FAISS inner-product index. |
+| **BM25 (keyword search)** | Old-school search on exact words. Great for names and numbers like `WMT 2014`, `540B`, `P100`, which embeddings blur. | `rank_bm25`. On this corpus BM25 *alone* beat dense alone (hit 0.886 vs 0.829). |
+| **Hybrid + RRF** | Run both searches and merge the two ranked lists. Reciprocal Rank Fusion scores each chunk `Σ 1/(60 + rank)`, so chunks both searches like rise to the top. No score calibration needed. | Top-30 from each, fused. Removing BM25 from the final system drops MRR **0.78 → 0.72**. |
+| **Cross-encoder reranker** | The first search is fast but rough. A reranker reads the question and each candidate *together* and re-scores them carefully. Slower, so it only sees the top 30. | `bge-reranker-base` picks the final 5. **The biggest single gain: MRR 0.65 → 0.75**, for about 380 ms on a laptop GPU. |
+| **History-aware retrieval** | "What about its decoder?" means nothing on its own. Short or pronoun-led follow-ups get the previous question attached before searching. | Follow-up hit rate 0.60 → 0.80. Overall hit **0.914 → 0.943**. |
+| **Grounded prompt + citations** | Tell the model to use *only* the excerpts, cite `[p. N]`, and use one exact sentence when the answer isn't there. | False refusals **9 → 1**, unanswerable-question score **1.0 → 2.0**, answers 190 → 39 words. |
+| **Hallucination check (NLI)** | A second, independent model asks "does this excerpt actually support this sentence?" for every sentence of the answer. The generator never grades itself. | DeBERTa-v3 NLI ensemble on sentence windows, run offline. Unsupported answers **50.0% → 14.3%**. |
+| **Token & cost accounting** | You can't optimise what you don't measure. | Exact tokens from Gemini `usage_metadata`, a price table, and per-stage latency, logged to `data/metrics/requests.jsonl` and shown under every answer. |
 
-All settings are in [`App/rag/config.py`](App/rag/config.py) and can be overridden with environment variables
-(see [`.env.example`](.env.example)).
+### What each technique added
 
----
+<p align="center">
+  <img src="docs/assets/ablation.svg" alt="Hit@k and MRR as each technique is added: original 0.714/0.488, token chunks 0.714/0.553, headers 0.829/0.587, hybrid 0.886/0.652, reranker 0.914/0.754, follow-ups 0.943/0.780." width="100%">
+</p>
+
+Each step changes one thing, so every gain can be traced to a single technique. Sweeps (chunk size, k, embedder) are in
+the [full ablation table](eval/results/retrieval_ablation.md). One surprise: `bge-base`, a model 3× larger, and
+`all-MiniLM` score **exactly the same** as `bge-small` once BM25 and the reranker are in place. So the smallest one
+stays.
+
+## 🧰 Tech stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| Web app | Flask (chat, converter), Streamlit (summarizer) | Simple, and the chat route is a thin layer over `RAGService` |
+| PDF text | `pypdf`, per page | Keeps page numbers for citations |
+| Embeddings | `BAAI/bge-small-en-v1.5` (sentence-transformers) | Free and local, and as accurate as models 3× larger on this eval |
+| Vector index | FAISS `IndexFlatIP` | Exact search, tiny per-document indexes |
+| Keyword index | `rank_bm25` (BM25Okapi) | Catches exact terms and numbers |
+| Reranker | `BAAI/bge-reranker-base` cross-encoder | Biggest single quality gain |
+| LLM | `gemini-3.5-flash-lite` via `google-genai` | The only API call; 60 s timeout, back-off retries, disk cache |
+| Hallucination check | `cross-encoder/nli-deberta-v3-base` + `-small` | Offline and independent of the generator |
+| Storage | `data/rag_index/<sha256>_<settings-hash>/` as JSON + NumPy | No pickle; re-uploading a file costs 0; changing a setting rebuilds automatically |
+| Hardware | Any CPU; CUDA if available (built on an RTX 2050, 4 GB) | Models load in fp16 on GPU |
 
 ## 🚀 Quick start
+
+**1. Clone and create a virtual environment**
 
 ```bash
 git clone https://github.com/KalpeshEragi/MetaPDF.git
 cd MetaPDF
 python -m venv venv
-venv\Scripts\activate          # Windows  (source venv/bin/activate on Linux/macOS)
 ```
 
-Optional, for GPU (NVIDIA): install the CUDA build of PyTorch first.
+```bash
+venv\Scripts\activate
+```
+
+On Linux or macOS, use `source venv/bin/activate` instead.
+
+**2. (Optional) Install PyTorch with CUDA**, for NVIDIA GPUs. Skip this to run on CPU.
 
 ```bash
 pip install torch==2.13.0+cu126 torchvision==0.28.0+cu126 --index-url https://download.pytorch.org/whl/cu126
 ```
 
+**3. Install the dependencies**
+
 ```bash
 pip install -r requirements.txt
 ```
 
-Copy `.env.example` to `env/.env`, then set `GOOGLE_API_KEY` (free key from Google AI Studio) and `FLASK_SECRET_KEY`.
+**4. Add your keys.** Copy `.env.example` to `env/.env`, then set:
+
+- `GOOGLE_API_KEY`: a free key from [Google AI Studio](https://aistudio.google.com/apikey)
+- `FLASK_SECRET_KEY`: any long random string
+
+**5. Run**
 
 ```bash
 python app.py
 ```
 
-Open http://localhost:5000/chat. The first upload downloads the local models (about 0.5 GB) once.
+Open **http://localhost:5000/chat**, upload a PDF and ask away. The first upload downloads the local models once
+(about 0.5 GB).
 
 For the summarizer, run this in a second terminal:
 
@@ -116,53 +167,101 @@ For the summarizer, run this in a second terminal:
 streamlit run App/streamlit_app/stream_app.py
 ```
 
-### Run the tests and the evaluation
+### Configuration
 
-Unit tests (no network, no GPU):
+Every setting lives in [`App/rag/config.py`](App/rag/config.py) and can be overridden in `env/.env`:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `RAG_LLM_MODEL` | `gemini-3.5-flash-lite` | Answer model |
+| `RAG_EMBEDDING_MODEL` | `BAAI/bge-small-en-v1.5` | Dense embedder |
+| `RAG_RERANKER_MODEL` | `BAAI/bge-reranker-base` | Cross-encoder |
+| `RAG_RETRIEVAL_MODE` | `hybrid` | `dense`, `bm25` or `hybrid` |
+| `RAG_USE_RERANKER` | `1` | Turn the reranker on or off |
+| `RAG_CHUNK_TOKENS` / `RAG_CHUNK_OVERLAP_TOKENS` | `512` / `64` | Chunk size and overlap |
+| `RAG_FINAL_K` | `5` | Excerpts sent to the LLM |
+| `RAG_MAX_OUTPUT_TOKENS` | `512` | Answer length cap |
+| `RAG_DEVICE` | `auto` | `auto`, `cuda` or `cpu` |
+| `METAPDF_DATA_DIR` | `data/` | Where indexes, cache and metrics go |
+| `MAX_UPLOAD_MB` | `50` | Upload size limit |
+
+## 🧪 Evaluation
+
+The evaluation reuses exactly the same `RAGService` the web app runs, so the numbers describe the real system.
+
+Unit and route tests (no network, no GPU, no API key):
 
 ```bash
 python -m pytest tests -q
 ```
 
-Retrieval ablation (no API calls, about 3 minutes on GPU):
+Retrieval ablation (no API calls, about 3 minutes on a GPU):
 
 ```bash
 python eval/run_retrieval_ablation.py
 ```
 
-Before/after answers (about 80 Gemini calls, cached and resumable):
+Before/after answer evaluation (about 80 Gemini calls, cached and resumable):
 
 ```bash
 python eval/run_generation_eval.py
 ```
 
-The evaluation PDFs are public arXiv papers kept out of git. Download them with the URLs in
-[`eval/corpus/manifest.json`](eval/corpus/manifest.json) into `eval/corpus/pdfs/`.
-
----
+- **Test set:** [`eval/questions.jsonl`](eval/questions.jsonl). 40 questions over 5 arXiv papers, of which 35 are
+  answerable and 5 are deliberately unanswerable. Each answerable question has gold evidence quotes and key facts.
+- **Rubric:** [`eval/RUBRIC.md`](eval/RUBRIC.md).
+- **Results:** [`eval/results/`](eval/results).
+- **Getting the papers:** they are public but kept out of git. Download them with the URLs in
+  [`eval/corpus/manifest.json`](eval/corpus/manifest.json) into `eval/corpus/pdfs/`.
+- **Hallucination scoring** splits each answer into sentences, removes citations and filler, and asks an NLI
+  ensemble whether any 1–3-sentence window of the retrieved excerpts supports each one. The checker was tested on
+  hand-written true and false claims before any score was trusted.
 
 ## 📁 Project structure
 
 ```
 App/
-├── rag/                  ← the RAG pipeline (used by both the web app and the evaluation)
+├── rag/                  ← the RAG pipeline (shared by the web app and the evaluation)
 │   ├── config.py         all settings + Gemini price table
-│   ├── extract.py        PDF → per-page text (pypdf)
-│   ├── chunking.py       sentence-aligned token chunks with page ranges (+ legacy chunker for comparison)
-│   ├── index.py          FAISS + BM25 per document, safe JSON/NumPy persistence
+│   ├── extract.py        PDF → per-page text, title detection
+│   ├── chunking.py       sentence-aligned token chunks with page ranges (+ legacy chunker)
+│   ├── index.py          FAISS + BM25 per document, JSON/NumPy persistence
 │   ├── retrieve.py       dense / BM25 / hybrid RRF / cross-encoder rerank
 │   ├── prompts.py        grounded prompt with citations (+ original prompt for comparison)
-│   ├── llm.py            Gemini client: exact tokens, cost, cache, rate-limit handling
+│   ├── llm.py            Gemini client: exact tokens, cost, cache, retries, quota handling
 │   ├── faithfulness.py   local NLI hallucination checker
 │   └── pipeline.py       RAGService.ingest() / .ask()
-├── chat_app.py           Flask routes for chat (+ /chat/stats for token/cost totals)
+├── chat_app.py           Flask chat routes (+ /chat/stats for token and cost totals)
 ├── streamlit_app/        BART summarizer UI
 ├── ocr_processor.py      OCR for scanned pages
-└── *_converter.py, txt.py  Office/TXT → PDF
+└── *_converter.py        Office/TXT → PDF
 eval/                     questions, rubric, ablation + generation scripts, results
-docs/RAG_UPGRADE_JOURNAL.md   the step-by-step story of the upgrade
+docs/                     upgrade journal + README diagrams
 tests/                    unit + route tests
 ```
+
+## 🤝 Contributing
+
+Contributions are welcome, from typo fixes to new retrieval experiments.
+
+1. **Fork** the repo and clone your fork.
+2. **Create a branch**: `git checkout -b feat/short-description`.
+3. **Make your change**, and run `python -m pytest tests -q`.
+4. **If you touch retrieval, prompts or chunking**, run `python eval/run_retrieval_ablation.py` and put the
+   before/after numbers in your PR. Changes that move the metrics are the most interesting kind.
+5. **Commit** using [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`,
+   `eval:`, `test:`), then **open a pull request** against `main`.
+
+Ideas worth picking up: query rewriting, multi-document chat, scanned-PDF support in the chat, streaming answers, and
+a bigger eval set. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup details and ground rules.
+
+## ⚠️ Known limitations
+
+- **The eval set is small** (5 papers, 40 questions), so differences below about 6 points are within noise.
+- **Hallucination scores come from an automatic NLI model, not human judgement.** It was checked on hand-made cases
+  and spot-checked by hand, but it can miss claims that combine several excerpts.
+- **The Office converters need Windows with Microsoft Office.** The chat and summarizer are cross-platform.
+- **Scanned PDFs:** the chat needs a text layer, while the summarizer has OCR (which needs Poppler).
 
 ## 📸 Interface
 
@@ -170,14 +269,6 @@ tests/                    unit + route tests
 |---|---|---|---|
 | ![Home](static/Images/Screenshot%20(31).png) | ![Chat](static/Images/Screenshot%20(29).png) | ![Summary](static/Images/Screenshot%20(38).png) | ![Converter](static/Images/Screenshot%20(33).png) |
 
-## ⚠️ Known limitations
-
-- The eval set is small (5 papers, 40 questions), so differences below about 6 points are within noise.
-- Hallucination scores come from an automatic NLI proxy, not human judgement. It was checked on hand-made cases
-  and spot-checked by hand, but it can miss claims that combine several excerpts.
-- The Office converters need Windows with Microsoft Office installed. The chat and the summarizer are cross-platform.
-- Scanned PDFs: the chat needs a text layer, while the summarizer has OCR (needs Poppler).
-
 ## 📝 License
 
-MIT
+[MIT](LICENSE). Built by [@KalpeshEragi](https://github.com/KalpeshEragi).
