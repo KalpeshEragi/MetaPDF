@@ -2,7 +2,7 @@
 
 Systems (same Gemini model for both, because the original model was retired):
   before = original design: 10k-char chunks, dense-only k=4, "maximum detail + fall back on general knowledge" prompt
-  after  = upgraded design: 320-token page-aware chunks, hybrid BM25+dense, reranker, k=5, grounded prompt with citations
+  after  = upgraded design: 512-token sentence-aligned chunks, hybrid BM25+dense, reranker, k=5, grounded prompt with citations
 
 Scored automatically (no LLM judge, no extra quota):
   * completeness  — key facts from questions.jsonl found in the answer (RUBRIC.md A)
