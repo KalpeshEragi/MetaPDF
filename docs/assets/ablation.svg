@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="t d">
+  <title id="t">What each retrieval technique added</title>
+  <desc id="d">Evidence hit@k and MRR as each technique is added: Original hit 0.714 MRR 0.488; Token chunks hit 0.714 MRR 0.553; + Headers hit 0.829 MRR 0.587; + Hybrid hit 0.886 MRR 0.652; + Reranker hit 0.914 MRR 0.754; + Follow-ups hit 0.943 MRR 0.78.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A0F1F"/><stop offset="1" stop-color="#121A36"/></linearGradient>
+    <linearGradient id="fillHit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22D3EE" stop-opacity="0.22"/><stop offset="1" stop-color="#22D3EE" stop-opacity="0"/></linearGradient>
+    <linearGradient id="fillMrr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B5CF6" stop-opacity="0.22"/><stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/></linearGradient>
+    <clipPath id="card"><rect width="1200" height="520" rx="20"/></clipPath>
+  </defs>
+  <style>
+    .sans { font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Inter", Helvetica, Arial, sans-serif; }
+    .mono { font-family: "JetBrains Mono", "Cascadia Code", Consolas, "SF Mono", Menlo, monospace; }
+  </style>
+  <g clip-path="url(#card)"><rect width="1200" height="520" fill="url(#bg)"/></g>
+  <rect x="0.5" y="0.5" width="1199" height="519" rx="20" fill="none" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <g class="sans">
+    <text x="48" y="58" font-size="26" font-weight="700" fill="#F8FAFC">What each technique added</text>
+    <text x="48" y="86" font-size="15" fill="#94A3B8">Retrieval only, no LLM calls · 35 answerable questions · each step adds one change</text>
+    <line x1="860" y1="52" x2="888" y2="52" stroke="#22D3EE" stroke-width="3" stroke-linecap="round"/><circle cx="874" cy="52" r="4" fill="#22D3EE"/>
+    <text x="898" y="57" font-size="14" fill="#CBD5E1">Evidence hit@k</text>
+    <line x1="1020" y1="52" x2="1048" y2="52" stroke="#A78BFA" stroke-width="3" stroke-linecap="round"/><circle cx="1034" cy="52" r="4" fill="#A78BFA"/>
+    <text x="1058" y="57" font-size="14" fill="#CBD5E1">MRR</text>
+    <line x1="120" y1="380.0" x2="1150" y2="380.0" stroke="#FFFFFF" stroke-opacity="0.12" />
+    <text x="104" y="384.0" text-anchor="end" class="mono" font-size="12" fill="#64748B">0.4</text>
+    <line x1="120" y1="293.3" x2="1150" y2="293.3" stroke="#FFFFFF" stroke-opacity="0.06" stroke-dasharray="4 6"/>
+    <text x="104" y="297.3" text-anchor="end" class="mono" font-size="12" fill="#64748B">0.6</text>
+    <line x1="120" y1="206.7" x2="1150" y2="206.7" stroke="#FFFFFF" stroke-opacity="0.06" stroke-dasharray="4 6"/>
+    <text x="104" y="210.7" text-anchor="end" class="mono" font-size="12" fill="#64748B">0.8</text>
+    <line x1="120" y1="120.0" x2="1150" y2="120.0" stroke="#FFFFFF" stroke-opacity="0.06" stroke-dasharray="4 6"/>
+    <text x="104" y="124.0" text-anchor="end" class="mono" font-size="12" fill="#64748B">1.0</text>
+    <polygon points="190.0,380 190.0,243.9 366.0,243.9 542.0,194.1 718.0,169.4 894.0,157.3 1070.0,144.7 1070.0,380" fill="url(#fillHit)"/>
+    <polyline points="190.0,243.9 366.0,243.9 542.0,194.1 718.0,169.4 894.0,157.3 1070.0,144.7" fill="none" stroke="#22D3EE" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="190.0" cy="243.9" r="5" fill="#0F1630" stroke="#22D3EE" stroke-width="2.5"/>
+    <text x="190.0" y="229.9" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#22D3EE">0.714</text>
+    <circle cx="366.0" cy="243.9" r="5" fill="#0F1630" stroke="#22D3EE" stroke-width="2.5"/>
+    <text x="366.0" y="229.9" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#22D3EE">0.714</text>
+    <circle cx="542.0" cy="194.1" r="5" fill="#0F1630" stroke="#22D3EE" stroke-width="2.5"/>
+    <text x="542.0" y="180.1" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#22D3EE">0.829</text>
+    <circle cx="718.0" cy="169.4" r="5" fill="#0F1630" stroke="#22D3EE" stroke-width="2.5"/>
+    <text x="718.0" y="155.4" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#22D3EE">0.886</text>
+    <circle cx="894.0" cy="157.3" r="5" fill="#0F1630" stroke="#22D3EE" stroke-width="2.5"/>
+    <text x="894.0" y="143.3" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#22D3EE">0.914</text>
+    <circle cx="1070.0" cy="144.7" r="6.5" fill="#0F1630" stroke="#22D3EE" stroke-width="2.5"/>
+    <text x="1070.0" y="130.7" text-anchor="middle" class="mono" font-size="14" font-weight="800" fill="#F8FAFC">0.943</text>
+    <polygon points="190.0,380 190.0,341.9 366.0,313.7 542.0,299.0 718.0,270.8 894.0,226.6 1070.0,215.3 1070.0,380" fill="url(#fillMrr)"/>
+    <polyline points="190.0,341.9 366.0,313.7 542.0,299.0 718.0,270.8 894.0,226.6 1070.0,215.3" fill="none" stroke="#A78BFA" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="190.0" cy="341.9" r="5" fill="#0F1630" stroke="#A78BFA" stroke-width="2.5"/>
+    <text x="190.0" y="363.9" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#A78BFA">0.488</text>
+    <circle cx="366.0" cy="313.7" r="5" fill="#0F1630" stroke="#A78BFA" stroke-width="2.5"/>
+    <text x="366.0" y="335.7" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#A78BFA">0.553</text>
+    <circle cx="542.0" cy="299.0" r="5" fill="#0F1630" stroke="#A78BFA" stroke-width="2.5"/>
+    <text x="542.0" y="321.0" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#A78BFA">0.587</text>
+    <circle cx="718.0" cy="270.8" r="5" fill="#0F1630" stroke="#A78BFA" stroke-width="2.5"/>
+    <text x="718.0" y="292.8" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#A78BFA">0.652</text>
+    <circle cx="894.0" cy="226.6" r="5" fill="#0F1630" stroke="#A78BFA" stroke-width="2.5"/>
+    <text x="894.0" y="248.6" text-anchor="middle" class="mono" font-size="12.5" font-weight="600" fill="#A78BFA">0.754</text>
+    <circle cx="1070.0" cy="215.3" r="6.5" fill="#0F1630" stroke="#A78BFA" stroke-width="2.5"/>
+    <text x="1070.0" y="237.3" text-anchor="middle" class="mono" font-size="14" font-weight="800" fill="#F8FAFC">0.780</text>
+    <text x="190" y="414" text-anchor="middle" font-size="14.5" font-weight="700" fill="#E2E8F0">Original</text>
+    <text x="190" y="434" text-anchor="middle" font-size="12" fill="#64748B">10k-char chunks</text>
+    <text x="190" y="458" text-anchor="middle" class="mono" font-size="12" fill="#94A3B8">9,454 tok</text>
+    <text x="366" y="414" text-anchor="middle" font-size="14.5" font-weight="700" fill="#E2E8F0">Token chunks</text>
+    <text x="366" y="434" text-anchor="middle" font-size="12" fill="#64748B">512 tok, sentences</text>
+    <text x="366" y="458" text-anchor="middle" class="mono" font-size="12" fill="#94A3B8">2,384 tok</text>
+    <text x="542" y="414" text-anchor="middle" font-size="14.5" font-weight="700" fill="#E2E8F0">+ Headers</text>
+    <text x="542" y="434" text-anchor="middle" font-size="12" fill="#64748B">title | page</text>
+    <text x="542" y="458" text-anchor="middle" class="mono" font-size="12" fill="#94A3B8">2,401 tok</text>
+    <text x="718" y="414" text-anchor="middle" font-size="14.5" font-weight="700" fill="#E2E8F0">+ Hybrid</text>
+    <text x="718" y="434" text-anchor="middle" font-size="12" fill="#64748B">BM25 + dense, RRF</text>
+    <text x="718" y="458" text-anchor="middle" class="mono" font-size="12" fill="#94A3B8">2,410 tok</text>
+    <text x="894" y="414" text-anchor="middle" font-size="14.5" font-weight="700" fill="#E2E8F0">+ Reranker</text>
+    <text x="894" y="434" text-anchor="middle" font-size="12" fill="#64748B">cross-encoder</text>
+    <text x="894" y="458" text-anchor="middle" class="mono" font-size="12" fill="#94A3B8">2,408 tok</text>
+    <text x="1070" y="414" text-anchor="middle" font-size="14.5" font-weight="700" fill="#E2E8F0">+ Follow-ups</text>
+    <text x="1070" y="434" text-anchor="middle" font-size="12" fill="#64748B">history-aware</text>
+    <text x="1070" y="458" text-anchor="middle" class="mono" font-size="12" fill="#94A3B8">2,409 tok</text>
+    <text x="104" y="458" text-anchor="end" font-size="12" fill="#64748B">context</text>
+    <rect x="48" y="474" width="1104" height="1" fill="#FFFFFF" fill-opacity="0.06"/>
+    <text x="48" y="500" font-size="13" fill="#94A3B8">Biggest single gain: the reranker (MRR 0.652 → 0.754). Context sent to the LLM fell 9,454 → 2,409 tokens while accuracy went up.</text>
+  </g>
+</svg>

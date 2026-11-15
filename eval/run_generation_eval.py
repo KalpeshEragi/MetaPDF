@@ -2,7 +2,7 @@
 
 Systems (same Gemini model for both, because the original model was retired):
   before = original design: 10k-char chunks, dense-only k=4, "maximum detail + fall back on general knowledge" prompt
-  after  = upgraded design: 320-token page-aware chunks, hybrid BM25+dense, reranker, k=5, grounded prompt with citations
+  after  = upgraded design: 512-token sentence-aligned chunks, hybrid BM25+dense, reranker, k=5, grounded prompt with citations
 
 Scored automatically (no LLM judge, no extra quota):
   * completeness  — key facts from questions.jsonl found in the answer (RUBRIC.md A)
@@ -32,7 +32,8 @@ from App.rag.llm import QuotaExhausted
 from App.rag.pipeline import RAGService
 
 SYSTEMS = {"before": LEGACY, "after": UPGRADED}
-OUT = RES / "generation_eval.jsonl"
+OUT = RES / "_work" / "generation_eval_full.jsonl"   # full records incl. retrieved paper text (kept out of git)
+SLIM = RES / "generation_eval.jsonl"                 # committed: same records without the copyrighted excerpts
 
 
 def run(systems: list[str], limit: int | None, pause: float):
@@ -172,6 +173,8 @@ def summarize():
             "answer_words_mean": round(statistics.mean(len(r["answer"].split()) for r in R), 1),
         }
     (RES / "generation_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    slim = (json.dumps({k: v for k, v in r.items() if k != "contexts"}, ensure_ascii=False) for r in rows)
+    SLIM.write_text("\n".join(slim) + "\n", encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return summary
 

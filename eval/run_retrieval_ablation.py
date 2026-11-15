@@ -37,7 +37,7 @@ CONFIGS = [
     ("sweep: final k=3", UPGRADED.with_(final_k=3), "sweep"),
     ("sweep: final k=8", UPGRADED.with_(final_k=8), "sweep"),
     ("sweep: dense + rerank (no BM25)", UPGRADED.with_(retrieval_mode="dense"), "sweep"),
-    ("sweep: embedder bge-small", UPGRADED.with_(embedding_model="BAAI/bge-small-en-v1.5"), "sweep"),
+    ("sweep: embedder bge-base (110M, 3x larger)", UPGRADED.with_(embedding_model="BAAI/bge-base-en-v1.5"), "sweep"),
     ("sweep: embedder all-MiniLM-L6-v2", UPGRADED.with_(embedding_model="sentence-transformers/all-MiniLM-L6-v2",
                                                         query_instruction=""), "sweep"),
 ]
